@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="assets/js/theme-manager.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Light theme variables */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: rgba(0, 0, 0, 0.05);
+            --bg-card: rgba(0, 0, 0, 0.05);
+            --text-primary: #000000;
+            --text-secondary: rgba(0, 0, 0, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+      
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: hidden;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .brand-text h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .brand-text p {
+            font-size: 0.75rem;
+        }
+
+        /* Empty State Styles */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .empty-state h4 {
+            margin: 0 0 0.5rem;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+        
+        .empty-state p {
+            margin: 0 0 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        [data-theme="light"] .empty-state {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="light"] .empty-icon {
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .menu-section {
+            margin-bottom: 1rem;
+        }
+
+        .menu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .menu-item.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Account dropdown styles */
+        .account-dropdown {
+            position: relative;
+        }
+
+        .account-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+       
+
+        .account-btn i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .account-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .account-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .account-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+       
+
+        .account-dropdown-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .profile-pic {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            background: var(--bg-primary);
+            margin-top: 0;
+        }
+
+        /* Header */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            position: fixed;
+            top: 0;
+            left: 280px;
+            right: 0;
+            z-index: 999;
+        }
+
+      
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .welcome-text {
+            text-align: right;
+        }
+
+        .welcome-text h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .welcome-text p {
+            font-size: 0.625rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+       
+
+     
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 1rem;
+            margin-top: 70px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 0;
+        }
+
+        
+
+        .nav-btn {
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-primary);
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+     
+        /* Quick Actions Section */
+        .quick-actions-section {
+            margin-top: 1.5rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+      
+            border: none;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: block;
+        }
+
+      
+
+        .action-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+   
+        }
+
+ 
+
+        .action-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .action-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Study Goals Section */
+        .study-goals-section {
+            margin-top: 1.5rem;
+        }
+
+        .add-goal-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+     
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .goal-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.2s ease;
+        }
+
+    
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .goal-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .goal-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .goal-status.completed {
+            background: #10b981;
+            color: white;
+        }
+
+        .goal-status.in-progress {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .goal-status.pending {
+            background: var(--text-secondary);
+            color: white;
+        }
+
+        .goal-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .goal-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .goal-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .goal-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .goal-action-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+        }
+
+ 
+
+
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .activity-progress {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Recent Activity Section */
+        .recent-activity-section {
+            margin-top: 1.5rem;
+        }
+
+        /* Recent Quiz Results Section */
+        .recent-quiz-results-section {
+            margin-top: 1.5rem;
+        }
+
+        .quiz-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .recent-quiz-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .recent-quiz-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .quiz-score {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: #fff;
+        }
+
+        .quiz-score.excellent {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .quiz-score.good {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .quiz-score.needs-improvement {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .quiz-course {
+            flex: 1;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .quiz-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .no-quiz-results {
+            text-align: center;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .no-quiz-results i {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .no-quiz-results h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .no-quiz-results p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                            <div class="brand-text">
+                <h3>SmartStudy</h3>
+                <p>Student Learning Hub</p>
+            </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Learning Hub</div>
+                <a href="dashboard.html" class="menu-item active">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="courses.html" class="menu-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>Browse Courses</span>
+                </a>
+               
+                <a href="quiz.html" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Take Quiz</span>
+                </a>
+            </div>
+
+           
+
+            <div class="menu-section">
+               <!--  <div class="menu-title">Account</div> -->
+                <div class="account-dropdown">
+                    
+                    <div  id="accountDropdown">
+                       
+                        <a href="index.html" class="account-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            
+        </aside>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="hamburger-menu" id="sidebarToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+               
+                <div class="header-right">
+                    <div class="welcome-text">
+                        <h4 id="userName">Welcome Back, Student 👋</h4>
+                        <p>Ready to continue your learning journey</p>
+                    </div>
+                  
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <div class="dashboard-grid">
+                  
+
+               
+                   
+                </div>
+
+                <!-- Quiz Statistics Section -->
+                <div class="quiz-stats-section" id="quizStatsSection" style="display: none;">
+                    <div class="section-header">
+                        <h3>Quiz Performance</h3>
+                    </div>
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                        <div class="stat-card" style="background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary, #16a34a);" id="totalQuizzes">0</div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem;">Total Quizzes</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary, #16a34a);" id="averageScore">0%</div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem;">Average Score</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary, #16a34a);" id="bestScore">0%</div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem;">Best Score</div>
+                        </div>
+                        <div class="stat-card" style="background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary, #16a34a);" id="totalTime">0s</div>
+                            <div style="color: var(--text-secondary); font-size: 0.875rem;">Total Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-quiz-results-section">
+                    <div class="quiz-results-list" id="recentQuizzesList">
+                        <!-- Quiz results will be loaded dynamically -->
+                        <div class="no-quiz-results">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>No Quiz Results Yet</h4>
+                            <p>Take your first quiz to see your results here</p>
+                            <a href="quiz.html" class="btn primary">Start Quiz</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="quick-actions-section">
+                    <div class="section-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="actions-grid">
+                        <a href="quiz.html" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="action-title">Take Quiz</div>
+                            <div class="action-desc">Test your knowledge</div>
+                        </a>
+                       
+                        <a href="courses.html" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="action-title">Browse Courses</div>
+                            <div class="action-desc">Find new subjects</div>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                <!-- Study Goals Section -->
+                <div class="study-goals-section">
+                    <div class="section-header">
+                        <h3>Study Goals</h3>
+                        <a href="#" class="add-goal-btn" onclick="showAddGoalModal(); return false;">
+                            <i class="fas fa-plus"></i>
+                            Add Goal
+                        </a>
+                    </div>
+                    <div class="goals-grid">
+                        <!-- Goals will be loaded dynamically -->
+                    </div>
+                </div>
+
+              
+        </main>
+    </div>
+
+    <!-- Local Database Services -->
+    <script src="assets/js/local-database.js"></script>
+    <script src="assets/js/demo-data.js"></script>
+
+    <script src="assets/js/script.js"></script>
+    
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded, checking authentication...');
+            
+            // Check multiple possible storage keys
+            const pendingUser = localStorage.getItem('pendingUser');
+            const userData = localStorage.getItem('userData');
+            
+            console.log('pendingUser:', pendingUser);
+            console.log('userData:', userData);
+            
+            let user = null;
+            
+            if (pendingUser) {
+                try {
+                    user = JSON.parse(pendingUser);
+                    console.log('User found in pendingUser:', user);
+                } catch (error) {
+                    console.error('Error parsing pendingUser:', error);
+                }
+            } else if (userData) {
+                try {
+                    user = JSON.parse(userData);
+                    console.log('User found in userData:', user);
+                } catch (error) {
+                    console.error('Error parsing userData:', error);
+                }
+            }
+            
+            if (!user) {
+                console.log('No user data found, redirecting to home...');
+                console.log('All localStorage keys:', Object.keys(localStorage));
+                
+                // For debugging, let's show what's in localStorage
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    console.log(`${key}:`, localStorage.getItem(key));
+                }
+                
+                // Add a small delay to see the console logs
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            console.log('User authenticated, updating dashboard...');
+            
+            // Update user info
+            const userName = document.getElementById('userName');
+            
+            if (user.name || user.fullName) {
+                userName.textContent = `Welcome, ${user.name || user.fullName}! 👋`;
+            } else if (user.isAnonymous) {
+                userName.textContent = 'Welcome, Anonymous User! 👋';
+            } else {
+                userName.textContent = 'Welcome, Student! 👋';
+            }
+            
+            // Load and display quiz results
+            loadQuizResults();
+        });
+        
+        // Function to load and display quiz results
+        function loadQuizResults() {
+            try {
+                const quizResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+                const recentQuizzesEl = document.getElementById('recentQuizzesList');
+                
+                if (!recentQuizzesEl) {
+                    console.log('Quiz results container not found');
+                    return;
+                }
+                
+                if (quizResults.length === 0) {
+                    // Show empty state
+                    recentQuizzesEl.innerHTML = `
+                        <div class="no-quiz-results">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>No Quiz Results Yet</h4>
+                            <p>Take your first quiz to see your results here</p>
+                            <a href="quiz.html" class="btn primary">Start Quiz</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Clear existing content
+                recentQuizzesEl.innerHTML = '';
+                
+                // Add section header
+                const sectionHeader = document.createElement('div');
+                sectionHeader.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;';
+                sectionHeader.innerHTML = `
+                    <h3 style="margin: 0; color: var(--text-primary);">Recent Quiz Results</h3>
+                    <span style="color: var(--text-secondary); font-size: 0.875rem;">${quizResults.length} result${quizResults.length !== 1 ? 's' : ''}</span>
+                `;
+                recentQuizzesEl.appendChild(sectionHeader);
+                
+                // Display quiz results (show last 5)
+                const recentResults = quizResults.slice(0, 5);
+                recentResults.forEach(quiz => {
+                    const quizItem = document.createElement('div');
+                    quizItem.className = 'recent-quiz-item';
+                    quizItem.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 16px;
+                        background: var(--glass-bg);
+                        border: 1px solid var(--border-color);
+                        border-radius: 12px;
+                        margin-bottom: 12px;
+                        transition: all 0.2s ease;
+                    `;
+                    
+                    // Score styling based on performance
+                    let scoreClass = '';
+                    let scoreColor = '';
+                    if (quiz.score >= 90) {
+                        scoreClass = 'excellent';
+                        scoreColor = '#10b981';
+                    } else if (quiz.score >= 80) {
+                        scoreClass = 'very-good';
+                        scoreColor = '#059669';
+                    } else if (quiz.score >= 70) {
+                        scoreClass = 'good';
+                        scoreColor = '#3b82f6';
+                    } else if (quiz.score >= 60) {
+                        scoreClass = 'fair';
+                        scoreColor = '#f59e0b';
+                    } else {
+                        scoreClass = 'needs-improvement';
+                        scoreColor = '#ef4444';
+                    }
+                    
+                    quizItem.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                            <div style="
+                                width: 48px;
+                                height: 48px;
+                                border-radius: 50%;
+                                background: ${scoreColor};
+                                color: white;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: 700;
+                                font-size: 1.1rem;
+                            ">${quiz.score}%</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                                    ${quiz.courseName}
+                                </div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                    ${quiz.quizSet.replace('set-', 'Set ')} • ${quiz.correctAnswers}/${quiz.totalQuestions} correct
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right; color: var(--text-secondary); font-size: 0.875rem;">
+                            ${new Date(quiz.completedAt).toLocaleDateString()}
+                        </div>
+                    `;
+                    
+                    // Add hover effect
+                    quizItem.addEventListener('mouseenter', () => {
+                        quizItem.style.transform = 'translateY(-2px)';
+                        quizItem.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
+                    });
+                    
+                    quizItem.addEventListener('mouseleave', () => {
+                        quizItem.style.transform = 'translateY(0)';
+                        quizItem.style.boxShadow = 'none';
+                    });
+                    
+                    recentQuizzesEl.appendChild(quizItem);
+                });
+                
+                // Add action buttons
+                const actionButtons = document.createElement('div');
+                actionButtons.style.cssText = 'display: flex; gap: 12px; justify-content: center; margin-top: 16px;';
+                
+                // View All button if there are more than 5 results
+                if (quizResults.length > 5) {
+                    const viewAllBtn = document.createElement('button');
+                    viewAllBtn.style.cssText = `
+                        background: var(--bg-secondary);
+                        border: 1px solid var(--border-color);
+                        color: var(--text-primary);
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 0.875rem;
+                    `;
+                    viewAllBtn.textContent = `View All ${quizResults.length} Results`;
+                    viewAllBtn.onclick = showAllQuizResults;
+                    actionButtons.appendChild(viewAllBtn);
+                }
+                
+                // Clear Results button
+                const clearBtn = document.createElement('button');
+                clearBtn.style.cssText = `
+                    background: #ef4444;
+                    border: 1px solid #ef4444;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 0.875rem;
+                `;
+                clearBtn.textContent = 'Clear All Results';
+                clearBtn.onclick = clearAllQuizResults;
+                actionButtons.appendChild(clearBtn);
+                
+                recentQuizzesEl.appendChild(actionButtons);
+                
+                // Update quiz statistics
+                updateQuizStatistics(quizResults);
+                
+                console.log(`Loaded ${quizResults.length} quiz results`);
+                
+            } catch (error) {
+                console.error('Error loading quiz results:', error);
+            }
+        }
+        
+        // Function to update quiz statistics
+        function updateQuizStatistics(quizResults) {
+            if (quizResults.length === 0) {
+                document.getElementById('quizStatsSection').style.display = 'none';
+                return;
+            }
+            
+            // Show stats section
+            document.getElementById('quizStatsSection').style.display = 'block';
+            
+            // Calculate statistics
+            const totalQuizzes = quizResults.length;
+            const totalScore = quizResults.reduce((sum, quiz) => sum + quiz.score, 0);
+            const averageScore = Math.round(totalScore / totalQuizzes);
+            const bestScore = Math.max(...quizResults.map(quiz => quiz.score));
+            const totalTime = quizResults.reduce((sum, quiz) => sum + quiz.timeSpent, 0);
+            
+            // Update DOM
+            document.getElementById('totalQuizzes').textContent = totalQuizzes;
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            document.getElementById('bestScore').textContent = bestScore + '%';
+            document.getElementById('totalTime').textContent = totalTime + 's';
+        }
+        
+        // Function to clear all quiz results
+        function clearAllQuizResults() {
+            if (confirm('Are you sure you want to clear all quiz results? This action cannot be undone.')) {
+                localStorage.removeItem('quizResults');
+                localStorage.removeItem('lastQuizResultCount');
+                loadQuizResults(); // Refresh the display
+                console.log('All quiz results cleared');
+            }
+        }
+        
+        // Function to show all quiz results in a modal
+        function showAllQuizResults() {
+            try {
+                const quizResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                `;
+                
+                const modalContent = document.createElement('div');
+                modalContent.style.cssText = `
+                    background: var(--bg-primary);
+                    border-radius: 12px;
+                    padding: 24px;
+                    max-width: 800px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 1px solid var(--border-color);
+                `;
+                
+                modalContent.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0; color: var(--text-primary);">All Quiz Results</h2>
+                        <button onclick="this.closest('.quiz-modal').remove()" style="
+                            background: none;
+                            border: none;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            color: var(--text-secondary);
+                        ">&times;</button>
+                    </div>
+                    <div id="allQuizResults"></div>
+                `;
+                
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+                
+                // Populate all results
+                const allResultsContainer = modal.querySelector('#allQuizResults');
+                quizResults.forEach(quiz => {
+                    const quizItem = document.createElement('div');
+                    quizItem.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 16px;
+                        background: var(--glass-bg);
+                        border: 1px solid var(--border-color);
+                        border-radius: 12px;
+                        margin-bottom: 12px;
+                    `;
+                    
+                    let scoreColor = '';
+                    if (quiz.score >= 90) scoreColor = '#10b981';
+                    else if (quiz.score >= 80) scoreColor = '#059669';
+                    else if (quiz.score >= 70) scoreColor = '#3b82f6';
+                    else if (quiz.score >= 60) scoreColor = '#f59e0b';
+                    else scoreColor = '#ef4444';
+                    
+                    quizItem.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                            <div style="
+                                width: 48px;
+                                height: 48px;
+                                border-radius: 50%;
+                                background: ${scoreColor};
+                                color: white;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: 700;
+                                font-size: 1.1rem;
+                            ">${quiz.score}%</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                                    ${quiz.courseName}
+                                </div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                    ${quiz.quizSet.replace('set-', 'Set ')} • ${quiz.correctAnswers}/${quiz.totalQuestions} correct • ${quiz.timeSpent}s
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right; color: var(--text-secondary); font-size: 0.875rem;">
+                            ${new Date(quiz.completedAt).toLocaleDateString()}
+                        </div>
+                    `;
+                    
+                    allResultsContainer.appendChild(quizItem);
+                });
+                
+                // Add modal class for styling
+                modal.classList.add('quiz-modal');
+                
+            } catch (error) {
+                console.error('Error showing all quiz results:', error);
+            }
+        }
+
+        // Theme functionality is now handled by theme-manager.js
+        // The theme manager automatically initializes and handles all theme switching
+        
+        // Refresh quiz results when user returns to dashboard
+        window.addEventListener('focus', function() {
+            // Check if quiz results have been updated
+            const currentResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+            const lastResult = localStorage.getItem('lastQuizResultCount');
+            
+            if (currentResults.length.toString() !== lastResult) {
+                console.log('Quiz results updated, refreshing dashboard...');
+                loadQuizResults();
+                localStorage.setItem('lastQuizResultCount', currentResults.length.toString());
+            }
+        });
+
+        // Menu item functionality
+       /*  document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        }); */
+
+        // Account dropdown functionality
+        const accountBtn = document.getElementById('accountBtn');
+        const accountDropdown = document.getElementById('accountDropdown');
+        const accountChevron = accountBtn.querySelector('.fa-chevron-down');
+
+        accountBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            accountDropdown.classList.toggle('show');
+            
+            // Change chevron icon direction
+            if (accountDropdown.classList.contains('show')) {
+                accountChevron.className = 'fas fa-chevron-down';
+            } else {
+                accountChevron.className = 'fas fa-chevron-up';
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!accountBtn.contains(e.target) && !accountDropdown.contains(e.target)) {
+                accountDropdown.classList.remove('show');
+                accountChevron.className = 'fas fa-chevron-up';
+            }
+        });
+
+        // Chart functionality
+        function initChart() {
+            const canvas = document.getElementById('performanceCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Check if user has data or show empty chart for new users
+            const hasData = window.DatabaseService && window.DatabaseService.isAuthenticated();
+            
+            // For new users, show empty chart (all zeros)
+            const quizScores = [0, 0, 0, 0, 0, 0, 0];
+            const studyTime = [0, 0, 0, 0, 0, 0, 0];
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = (height / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Draw quiz scores line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            quizScores.forEach((score, index) => {
+                const x = (width / (quizScores.length - 1)) * index;
+                const y = height - (score / 100) * height;
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw study time line
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            studyTime.forEach((time, index) => {
+                const x = (width / (studyTime.length - 1)) * index;
+                const y = height - (time / 5) * height;
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+        }
+
+        // Chart button functionality
+        document.querySelectorAll('.chart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                initChart(); // Reinitialize chart with new data
+            });
+        });
+
+        // Initialize chart
+        setTimeout(initChart, 100);
+
+        // Set current date
+        const currentDate = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = currentDate;
+
+        // Animate progress bars
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        }
+
+        // Animate stats on load
+        function animateStats() {
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                const finalValue = stat.textContent;
+                const isPercentage = finalValue.includes('%');
+                const isTime = finalValue.includes('h') || finalValue.includes('m');
+                
+                if (isPercentage) {
+                    const numValue = parseInt(finalValue);
+                    animateNumber(stat, 0, numValue, 1000, '%');
+                } else if (isTime) {
+                    // For time values, just add a fade-in effect
+                    stat.style.opacity = '0';
+                    setTimeout(() => {
+                        stat.style.transition = 'opacity 0.5s ease';
+                        stat.style.opacity = '1';
+                    }, 200);
+                } else {
+                    const numValue = parseInt(finalValue);
+                    animateNumber(stat, 0, numValue, 1000);
+                }
+            });
+        }
+
+        function animateNumber(element, start, end, duration, suffix = '') {
+            const startTime = performance.now();
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                element.textContent = current + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            requestAnimationFrame(animate);
+        }
+
+        // Initialize animations
+        setTimeout(() => {
+            animateProgressBars();
+            animateStats();
+        }, 500);
+
+        // Enhanced search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            // Add search functionality here
+            console.log('Searching for:', query);
+        });
+
+        // Add loading states to action cards
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Add hover effects to activity cards
+        document.querySelectorAll('.activity-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('pendingUser');
+                localStorage.removeItem('userData');
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Export button functionality
+        document.querySelector('.export-btn').addEventListener('click', function() {
+            window.location.href = 'upload.html';
+        });
+
+        // Performance circle animation
+        const performanceCircle = document.querySelector('.performance-circle');
+        if (performanceCircle) {
+            performanceCircle.style.opacity = '0';
+            performanceCircle.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                performanceCircle.style.transition = 'all 0.8s ease';
+                performanceCircle.style.opacity = '1';
+                performanceCircle.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+     
+
+        // Add tooltips
+        const tooltips = {
+            'Take Quiz': 'Test your knowledge with interactive quizzes',
+            'Upload Notes': 'Share your study materials with the community',
+            'Browse Courses': 'Discover new subjects and topics',
+            'View Profile': 'Manage your account and preferences'
+        };
+
+        document.querySelectorAll('.action-card').forEach(card => {
+            const title = card.querySelector('.action-title').textContent;
+            if (tooltips[title]) {
+                card.title = tooltips[title];
+            }
+        });
+
+        console.log('Dashboard enhanced with all features loaded successfully!');
+
+        // Study Goals functionality
+        function showAddGoalModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add New Goal</h3>
+                        <button class="modal-close" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Goal Title</label>
+                            <input type="text" id="goalTitle" placeholder="Enter goal title">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="goalDescription" placeholder="Enter goal description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Date</label>
+                            <input type="date" id="goalDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Goal Type</label>
+                            <select id="goalType">
+                                <option value="study">Study Goal</option>
+                                <option value="quiz">Quiz Goal</option>
+                                <option value="reading">Reading Goal</option>
+                                <option value="project">Project Goal</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn-primary" onclick="addGoal()">Add Goal</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Add modal styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    backdrop-filter: blur(10px);
+                }
+                .modal-content {
+                    background: var(--glass-bg);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid var(--border-color);
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    width: 90%;
+                    max-width: 500px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                }
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid var(--border-color);
+                }
+                .modal-header h3 {
+                    color: var(--text-primary);
+                    margin: 0;
+                }
+                .modal-close {
+                    background: none;
+                    border: none;
+                    color: var(--text-secondary);
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    padding: 0;
+                    width: 32px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    transition: all 0.2s ease;
+                }
+                .modal-close:hover {
+                    background: var(--bg-secondary);
+                    color: var(--text-primary);
+                }
+                .form-group {
+                    margin-bottom: 1rem;
+                }
+                .form-group label {
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    color: var(--text-primary);
+                    font-weight: 500;
+                }
+                .form-group input,
+                .form-group textarea,
+                .form-group select {
+                    width: 100%;
+                    padding: 0.75rem;
+                    border: 1px solid var(--border-color);
+                    border-radius: 6px;
+                    background: var(--bg-secondary);
+                    color: var(--text-primary);
+                    font-size: 0.875rem;
+                }
+                .form-group textarea {
+                    resize: vertical;
+                    min-height: 80px;
+                }
+                .modal-footer {
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: flex-end;
+                    margin-top: 1.5rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid var(--border-color);
+                }
+                .btn-primary,
+                .btn-secondary {
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 6px;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    border: none;
+                }
+                .btn-primary {
+                    background: var(--text-primary);
+                    color: var(--bg-primary);
+                }
+                .btn-secondary {
+                    background: var(--bg-secondary);
+                    color: var(--text-primary);
+                    border: 1px solid var(--border-color);
+                }
+                .btn-primary:hover {
+                    opacity: 0.9;
+                }
+                .btn-secondary:hover {
+                    background: var(--bg-card);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // This function is replaced by the async version below
+        // function addGoal() { ... } - REMOVED
+
+        function getGoalIcon(type) {
+            const icons = {
+                'study': 'book',
+                'quiz': 'question-circle',
+                'reading': 'book-open',
+                'project': 'folder'
+            };
+            return icons[type] || 'target';
+        }
+
+        // Notifications functionality
+        document.querySelector('.mark-all-read-btn').addEventListener('click', function() {
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.classList.remove('unread');
+            });
+            this.textContent = 'All Read';
+            this.style.opacity = '0.5';
+        });
+
+        // Notification action buttons
+        document.querySelectorAll('.notification-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const notification = this.closest('.notification-item');
+                
+                if (this.textContent === 'Take Quiz') {
+                    window.location.href = 'quiz.html';
+                } else if (this.textContent === 'Accept') {
+                    notification.style.background = 'var(--bg-secondary)';
+                    this.textContent = 'Accepted';
+                    this.classList.remove('accept');
+                    this.classList.add('completed');
+                } else if (this.textContent === 'Decline') {
+                    notification.style.opacity = '0.5';
+                    this.textContent = 'Declined';
+                    this.classList.remove('decline');
+                    this.classList.add('completed');
+                }
+            });
+        });
+
+        // Study streak animation
+        function animateStreak() {
+            const streakCount = document.querySelector('.streak-count');
+            const currentStreak = parseInt(streakCount.textContent);
+            
+            streakCount.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                streakCount.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Animate streak on page load
+        setTimeout(animateStreak, 1000);
+
+        // Goal card interactions
+        document.querySelectorAll('.goal-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Calendar day hover effects
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            day.addEventListener('mouseenter', function() {
+                if (this.classList.contains('completed') || this.classList.contains('today')) {
+                    this.style.transform = 'scale(1.1)';
+                }
+            });
+            
+            day.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Add keyboard shortcut for adding goals
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'g') {
+                e.preventDefault();
+                showAddGoalModal();
+            }
+        });
+
+        // CRUD Data Management System
+        class DashboardDataManager {
+            constructor() {
+                this.storageKeys = {
+                    goals: 'smartstudy_goals',
+                    notifications: 'smartstudy_notifications',
+                    activities: 'smartstudy_activities',
+                    streak: 'smartstudy_streak',
+                    settings: 'smartstudy_settings'
+                };
+                this.init();
+            }
+
+            init() {
+                this.loadInitialData();
+                this.updateStats();
+                this.renderNotifications();
+                this.renderGoals();
+            }
+
+            // CREATE operations
+            async createGoal(goalData) {
+                try {
+                    const result = await window.DatabaseService.addGoal(goalData);
+                    if (result.success) {
+                        this.updateStats();
+                        this.renderGoals();
+                        return { id: result.id, ...goalData };
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Error adding goal:', error);
+                    return null;
+                }
+            }
+
+            async createNotification(notificationData) {
+                try {
+                    const result = await window.DatabaseService.addNotification(notificationData);
+                    if (result.success) {
+                        this.updateStats();
+                        this.renderNotifications();
+                        return { id: result.id, ...notificationData };
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Error adding notification:', error);
+                    return null;
+                }
+            }
+
+            async createActivity(activityData) {
+                try {
+                    const result = await window.DatabaseService.addActivity(activityData);
+                    if (result.success) {
+                        this.updateStats();
+                        return { id: result.id, ...activityData };
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Error adding activity:', error);
+                    return null;
+                }
+            }
+
+            // READ operations
+            async getGoals() {
+                try {
+                    const result = await window.DatabaseService.getDashboardData();
+                    if (result.success) {
+                        return result.data.goals || [];
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('Error getting goals:', error);
+                    return [];
+                }
+            }
+
+            async getNotifications() {
+                try {
+                    const result = await window.DatabaseService.getDashboardData();
+                    if (result.success) {
+                        return result.data.notifications || [];
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('Error getting notifications:', error);
+                    return [];
+                }
+            }
+
+            async getActivities() {
+                try {
+                    const result = await window.DatabaseService.getDashboardData();
+                    if (result.success) {
+                        return result.data.activities || [];
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('Error getting activities:', error);
+                    return [];
+                }
+            }
+
+            getGoalById(id) {
+                const goals = this.getGoals();
+                return goals.find(goal => goal.id === id);
+            }
+
+            getNotificationById(id) {
+                const notifications = this.getNotifications();
+                return notifications.find(notification => notification.id === id);
+            }
+
+            // UPDATE operations
+            async updateGoal(id, updates) {
+                try {
+                    const result = await window.DatabaseService.updateGoal(id, updates);
+                    if (result.success) {
+                        this.updateStats();
+                        this.renderGoals();
+                        return true;
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Error updating goal:', error);
+                    return null;
+                }
+            }
+
+            async updateNotification(id, updates) {
+                try {
+                    const result = await window.DatabaseService.updateNotification(id, updates);
+                    if (result.success) {
+                        this.updateStats();
+                        this.renderNotifications();
+                        return true;
+                    }
+                    return null;
+                } catch (error) {
+                    console.error('Error updating notification:', error);
+                    return null;
+                }
+            }
+
+            markNotificationAsRead(id) {
+                return this.updateNotification(id, { isRead: true });
+            }
+
+            markAllNotificationsAsRead() {
+                const notifications = this.getNotifications();
+                notifications.forEach(notification => {
+                    notification.isRead = true;
+                    notification.updatedAt = new Date().toISOString();
+                });
+                this.saveNotifications(notifications);
+                this.updateStats();
+                this.renderNotifications();
+            }
+
+            updateGoalProgress(id, progress) {
+                const goal = this.getGoalById(id);
+                if (goal) {
+                    let status = 'pending';
+                    if (progress >= 100) status = 'completed';
+                    else if (progress > 0) status = 'in-progress';
+                    
+                    return this.updateGoal(id, { progress, status });
+                }
+                return null;
+            }
+
+            // DELETE operations
+            async deleteGoal(id) {
+                try {
+                    const result = await window.DatabaseService.deleteGoal(id);
+                    if (result.success) {
+                        this.updateStats();
+                        this.renderGoals();
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('Error deleting goal:', error);
+                    return false;
+                }
+            }
+
+            async deleteNotification(id) {
+                try {
+                    const result = await window.DatabaseService.deleteNotification(id);
+                    if (result.success) {
+                        this.updateStats();
+                        this.renderNotifications();
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('Error deleting notification:', error);
+                    return false;
+                }
+            }
+
+            async deleteActivity(id) {
+                try {
+                    const result = await window.DatabaseService.deleteActivity(id);
+                    if (result.success) {
+                        this.updateStats();
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('Error deleting activity:', error);
+                    return false;
+                }
+            }
+
+            // Utility methods
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            saveGoals(goals) {
+                localStorage.setItem(this.storageKeys.goals, JSON.stringify(goals));
+            }
+
+            saveNotifications(notifications) {
+                localStorage.setItem(this.storageKeys.notifications, JSON.stringify(notifications));
+            }
+
+            saveActivities(activities) {
+                localStorage.setItem(this.storageKeys.activities, JSON.stringify(activities));
+            }
+
+            async loadInitialData() {
+                try {
+                    // Check if user is new (no data exists)
+                    const goals = await this.getGoals();
+                    const notifications = await this.getNotifications();
+                    const activities = await this.getActivities();
+                    
+                    console.log('Loading initial data - Goals:', goals.length, 'Notifications:', notifications.length, 'Activities:', activities.length);
+                    
+                    // For new users, show completely empty state - NO SAMPLE DATA EVER
+                    if (goals.length === 0 && notifications.length === 0 && activities.length === 0) {
+                        console.log('✅ NEW USER DETECTED - Starting with completely empty dashboard');
+                        this.showEmptyState();
+                        return; // Don't load any sample data for new users
+                    }
+                    
+                    console.log('⚠️ EXISTING USER DETECTED - Loading sample data if missing');
+                    
+                    // Only for existing users who already have some data, load sample data if missing
+                    if (goals.length === 0) {
+                        console.log('Loading sample goals for existing user');
+                        await this.loadSampleGoals();
+                    }
+                    
+                    if (notifications.length === 0) {
+                        console.log('Loading sample notifications for existing user');
+                        await this.loadSampleNotifications();
+                    }
+                    
+                    if (activities.length === 0) {
+                        console.log('Loading sample activities for existing user');
+                        await this.loadSampleActivities();
+                    }
+                } catch (error) {
+                    console.error('Error loading initial data:', error);
+                }
+            }
+
+            async loadSampleGoals() {
+                const sampleGoals = [
+                    {
+                        title: 'Complete Physics Module',
+                        description: 'Finish all chapters and practice problems',
+                        type: 'study',
+                        progress: 100,
+                        status: 'completed'
+                    },
+                    {
+                        title: 'Read 5 Research Papers',
+                        description: 'Focus on quantum mechanics topics',
+                        type: 'reading',
+                        progress: 60,
+                        status: 'in-progress'
+                    },
+                    {
+                        title: 'Achieve 90% Quiz Average',
+                        description: 'Maintain high performance across all subjects',
+                        type: 'quiz',
+                        progress: 85,
+                        status: 'pending'
+                    }
+                ];
+                
+                for (const goal of sampleGoals) {
+                    await this.createGoal(goal);
+                }
+            }
+
+            async loadSampleNotifications() {
+                const sampleNotifications = [
+                    {
+                        title: 'New Quiz Available',
+                        message: 'Mathematics Chapter 5 quiz is now ready',
+                        type: 'quiz',
+                        isRead: false,
+                        actions: ['Take Quiz']
+                    },
+                    {
+                        title: 'Notebook Session Invitation',
+                        message: 'You\'ve been invited to join Physics Notebook Session',
+                        type: 'group',
+                        isRead: false,
+                        actions: ['Accept', 'Decline']
+                    },
+                    {
+                        title: 'Achievement Unlocked',
+                        message: 'Congratulations! You\'ve completed 10 quizzes',
+                        type: 'achievement',
+                        isRead: true,
+                        actions: []
+                    }
+                ];
+                
+                for (const notification of sampleNotifications) {
+                    await this.createNotification(notification);
+                }
+            }
+
+            showEmptyState() {
+                console.log('🎯 SHOWING EMPTY STATE FOR NEW USER');
+                
+                // Update stats to show zeros for new users
+                this.updateStats();
+                
+                // Show completely empty state for new users
+                const goalsContainer = document.querySelector('.goals-grid');
+                const notificationsContainer = document.getElementById('notificationsList');
+                const activitiesContainer = document.querySelector('.recent-activities');
+                const statsContainer = document.querySelector('.stats-grid');
+                const progressContainer = document.querySelector('.progress-section');
+                
+                console.log('Empty state containers found:', {
+                    goals: !!goalsContainer,
+                    notifications: !!notificationsContainer,
+                    activities: !!activitiesContainer,
+                    stats: !!statsContainer,
+                    progress: !!progressContainer
+                });
+                
+                if (goalsContainer) {
+                    goalsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-target"></i>
+                            </div>
+                            <h4>No Goals Set Yet</h4>
+                            <p>Set your first study goal to start tracking your progress</p>
+                            <button class="btn btn-primary" onclick="showAddGoalModal()">
+                                <i class="fas fa-plus"></i> Add Your First Goal
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                if (notificationsContainer) {
+                    notificationsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h4>No Notifications</h4>
+                            <p>Important updates and achievements will appear here</p>
+                        </div>
+                    `;
+                }
+                
+                if (activitiesContainer) {
+                    activitiesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4>No Recent Activity</h4>
+                            <p>Your study activities will appear here as you start learning</p>
+                        </div>
+                    `;
+                }
+                
+                // Update stats to show zeros
+                if (statsContainer) {
+                    const statItems = statsContainer.querySelectorAll('.stat-item');
+                    statItems.forEach(item => {
+                        const valueElement = item.querySelector('.stat-value');
+                        if (valueElement) {
+                            valueElement.textContent = '0';
+                        }
+                    });
+                }
+                
+                // Update progress section to show empty state
+                if (progressContainer) {
+                    const progressBars = progressContainer.querySelectorAll('.progress-bar');
+                    progressBars.forEach(bar => {
+                        const fill = bar.querySelector('.progress-fill');
+                        if (fill) {
+                            fill.style.width = '0%';
+                        }
+                    });
+                    
+                    const progressTexts = progressContainer.querySelectorAll('.progress-text');
+                    progressTexts.forEach(text => {
+                        text.textContent = '0%';
+                    });
+                }
+                
+                // Update agenda section to show empty state
+                const agendaContainer = document.querySelector('.agenda-timeline');
+                if (agendaContainer) {
+                    agendaContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <h4>No Agenda Set</h4>
+                            <p>Plan your study schedule to stay organized</p>
+                        </div>
+                    `;
+                }
+                
+                // Update learning progress
+                const overallProgress = document.getElementById('overallProgress');
+                const quizScore = document.getElementById('quizScore');
+                const progressMessage = document.getElementById('progressMessage');
+                
+                if (overallProgress) overallProgress.textContent = '0%';
+                if (quizScore) quizScore.textContent = '0%';
+                if (progressMessage) progressMessage.textContent = 'Start your learning journey today!';
+                
+                // Update chart to show empty data
+                setTimeout(() => {
+                    initChart();
+                }, 100);
+            }
+
+            async loadSampleActivities() {
+                const sampleActivities = [
+                    {
+                        title: 'Completed Physics Chapter 3',
+                        type: 'study',
+                        progress: 100
+                    },
+                    {
+                        title: 'Scored 95% on Math Quiz',
+                        type: 'quiz',
+                        progress: 95
+                    },
+                    {
+                        title: 'Uploaded Chemistry Notes',
+                        type: 'upload',
+                        progress: 75
+                    }
+                ];
+                
+                for (const activity of sampleActivities) {
+                    await this.createActivity(activity);
+                }
+            }
+
+            async updateStats() {
+                try {
+                    const [goals, notifications, activities] = await Promise.all([
+                        this.getGoals(), this.getNotifications(), this.getActivities()
+                    ]);
+                    document.getElementById('goalsCount').textContent = goals.length;
+                    document.getElementById('notificationsCount').textContent = notifications.length;
+                    document.getElementById('activitiesCount').textContent = activities.length;
+
+                    // New live stats
+                    try {
+                        while (!window.DatabaseService || !window.DatabaseService.db) {
+                            await new Promise(r=>setTimeout(r,100));
+                        }
+                        const [enr, user, quizStats] = await Promise.all([
+                            window.DatabaseService.getUserEnrolledCourses(),
+                            window.DatabaseService.getUserData(),
+                            window.DatabaseService.getQuizStats()
+                        ]);
+                        const stats = user.success ? (user.data.stats || {}) : {};
+                        const enrolled = enr.success ? enr.data.length : 0;
+                        const quizData = quizStats.success ? quizStats.data : { totalQuizzes: 0, averageScore: 0, bestScore: 0 };
+                        
+                        const lessonsCompletedEl = document.getElementById('lessonsCompletedCount');
+                        const enrolledEl = document.getElementById('coursesEnrolledCount');
+                        const quizScoreEl = document.getElementById('quizScoreCount');
+                        const studyTimeEl = document.getElementById('studyTimeCount');
+                        
+                        if (enrolledEl) enrolledEl.textContent = enrolled;
+                        if (quizScoreEl) quizScoreEl.textContent = quizData.averageScore + '%';
+                        if (lessonsCompletedEl) lessonsCompletedEl.textContent = stats.coursesCompleted || 0;
+                        if (studyTimeEl) {
+                            const totalMins = Math.round((stats.totalStudyHours || 0) * 60);
+                            studyTimeEl.textContent = `${Math.floor(totalMins/60)}h ${totalMins%60}m`;
+                        }
+
+                        // Update quiz-specific stats if elements exist
+                        const totalQuizzesEl = document.getElementById('totalQuizzesCount');
+                        const bestScoreEl = document.getElementById('bestScoreCount');
+                        const recentQuizzesEl = document.getElementById('recentQuizzesList');
+                        
+                        if (totalQuizzesEl) totalQuizzesEl.textContent = quizData.totalQuizzes;
+                        if (bestScoreEl) bestScoreEl.textContent = quizData.bestScore + '%';
+                        
+                        // Render recent quiz results
+                        if (recentQuizzesEl && quizData.recentScores) {
+                            recentQuizzesEl.innerHTML = '';
+                            quizData.recentScores.forEach(quiz => {
+                                const quizItem = document.createElement('div');
+                                quizItem.className = 'recent-quiz-item';
+                                quizItem.innerHTML = `
+                                    <div class="quiz-score ${quiz.score >= 80 ? 'excellent' : quiz.score >= 60 ? 'good' : 'needs-improvement'}">
+                                        ${quiz.score}%
+                                    </div>
+                                    <div class="quiz-course">${quiz.course}</div>
+                                    <div class="quiz-date">${new Date(quiz.date?.toDate?.() || quiz.date).toLocaleDateString()}</div>
+                                `;
+                                recentQuizzesEl.appendChild(quizItem);
+                            });
+                        }
+                    } catch (e) { console.warn('Live stats failed', e); }
+                } catch (error) {
+                    console.error('Error updating stats:', error);
+                }
+            }
+
+            async renderGoals() {
+                try {
+                    const goals = await this.getGoals();
+                    const goalsGrid = document.querySelector('.goals-grid');
+                    if (!goalsGrid) return;
+
+                    goalsGrid.innerHTML = '';
+                    goals.forEach(goal => {
+                        const goalCard = this.createGoalCard(goal);
+                        goalsGrid.appendChild(goalCard);
+                    });
+                } catch (error) {
+                    console.error('Error rendering goals:', error);
+                }
+            }
+
+            async renderNotifications() {
+                try {
+                    const notifications = await this.getNotifications();
+                    const notificationsList = document.getElementById('notificationsList');
+                    if (!notificationsList) return;
+
+                    notificationsList.innerHTML = '';
+                    notifications.forEach(notification => {
+                        const notificationItem = this.createNotificationItem(notification);
+                        notificationsList.appendChild(notificationItem);
+                    });
+                } catch (error) {
+                    console.error('Error rendering notifications:', error);
+                }
+            }
+
+            createGoalCard(goal) {
+                const card = document.createElement('div');
+                card.className = 'goal-card';
+                card.dataset.goalId = goal.id;
+                
+                card.innerHTML = `
+                    <div class="goal-header">
+                        <div class="goal-icon">
+                            <i class="fas fa-${this.getGoalIcon(goal.type)}"></i>
+                        </div>
+                        <div class="goal-status ${goal.status}">
+                            <i class="fas fa-${this.getStatusIcon(goal.status)}"></i>
+                        </div>
+                    </div>
+                    <div class="goal-content">
+                        <h4>${goal.title}</h4>
+                        <p>${goal.description}</p>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                            </div>
+                            <span class="progress-text">${goal.progress}% Complete</span>
+                        </div>
+                        <div class="goal-actions">
+                            <button class="goal-action-btn" onclick="dataManager.updateGoalProgress('${goal.id}', ${Math.min(goal.progress + 25, 100)})">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="goal-action-btn" onclick="dataManager.deleteGoal('${goal.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                return card;
+            }
+
+            createNotificationItem(notification) {
+                const item = document.createElement('div');
+                item.className = `notification-item ${notification.isRead ? '' : 'unread'}`;
+                item.dataset.notificationId = notification.id;
+                
+                const actionsHtml = notification.actions.map(action => 
+                    `<button class="notification-btn ${action.toLowerCase()}" onclick="handleNotificationAction('${notification.id}', '${action}')">${action}</button>`
+                ).join('');
+                
+                item.innerHTML = `
+                    <div class="notification-icon">
+                        <i class="fas fa-${this.getNotificationIcon(notification.type)}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notification.title}</div>
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-time">${this.formatTimeAgo(notification.createdAt)}</div>
+                    </div>
+                    ${notification.actions.length > 0 ? `<div class="notification-actions">${actionsHtml}</div>` : ''}
+                `;
+                
+                return item;
+            }
+
+            getGoalIcon(type) {
+                const icons = {
+                    'study': 'book',
+                    'quiz': 'question-circle',
+                    'reading': 'book-open',
+                    'project': 'folder'
+                };
+                return icons[type] || 'target';
+            }
+
+            getStatusIcon(status) {
+                const icons = {
+                    'completed': 'check',
+                    'in-progress': 'clock',
+                    'pending': 'hourglass'
+                };
+                return icons[status] || 'hourglass';
+            }
+
+            getNotificationIcon(type) {
+                const icons = {
+                    'quiz': 'bell',
+                    'group': 'users',
+                    'achievement': 'trophy',
+                    'study': 'book'
+                };
+                return icons[type] || 'bell';
+            }
+
+            formatTimeAgo(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+                
+                if (diffInMinutes < 1) return 'Just now';
+                if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+                if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hours ago`;
+                return `${Math.floor(diffInMinutes / 1440)} days ago`;
+            }
+        }
+
+        // Initialize data manager
+        let dataManager;
+
+        // Global functions for CRUD operations
+        function handleNotificationAction(notificationId, action) {
+            if (action === 'Take Quiz') {
+                window.location.href = 'quiz.html';
+            } else if (action === 'Accept') {
+                dataManager.updateNotification(notificationId, { 
+                    isRead: true, 
+                    status: 'accepted' 
+                });
+            } else if (action === 'Decline') {
+                dataManager.updateNotification(notificationId, { 
+                    isRead: true, 
+                    status: 'declined' 
+                });
+            }
+        }
+
+        function exportData() {
+            const data = {
+                goals: dataManager.getGoals(),
+                notifications: dataManager.getNotifications(),
+                activities: dataManager.getActivities(),
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `smartstudy-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.goals) dataManager.saveGoals(data.goals);
+                            if (data.notifications) dataManager.saveNotifications(data.notifications);
+                            if (data.activities) dataManager.saveActivities(data.activities);
+                            
+                            dataManager.updateStats();
+                            dataManager.renderGoals();
+                            dataManager.renderNotifications();
+                            
+                            alert('Data imported successfully!');
+                        } catch (error) {
+                            alert('Error importing data. Please check the file format.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                localStorage.removeItem(dataManager.storageKeys.goals);
+                localStorage.removeItem(dataManager.storageKeys.notifications);
+                localStorage.removeItem(dataManager.storageKeys.activities);
+                
+                dataManager.loadInitialData();
+                dataManager.updateStats();
+                dataManager.renderGoals();
+                dataManager.renderNotifications();
+                
+                alert('All data cleared successfully!');
+            }
+        }
+
+        // Update the addGoal function to use the data manager
+        async function addGoal() {
+            const title = document.getElementById('goalTitle').value;
+            const description = document.getElementById('goalDescription').value;
+            const date = document.getElementById('goalDate').value;
+            const type = document.getElementById('goalType').value;
+
+            if (!title || !description) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                console.log('Adding goal with data:', { title, description, targetDate: date, type });
+                
+                // Check if dataManager is available
+                if (!dataManager) {
+                    console.error('DataManager not initialized');
+                    alert('System not ready. Please refresh the page and try again.');
+                    return;
+                }
+
+                // Check if DatabaseService is available
+                if (!window.DatabaseService) {
+                    console.error('DatabaseService not available');
+                    alert('Database not ready. Please refresh the page and try again.');
+                    return;
+                }
+
+                const newGoal = await dataManager.createGoal({
+                    title,
+                    description,
+                    targetDate: date,
+                    type
+                });
+
+                if (newGoal) {
+                    console.log('Goal created successfully:', newGoal);
+                    closeModal();
+                    
+                    // Animate the new goal
+                    const newGoalCard = document.querySelector(`[data-goal-id="${newGoal.id}"]`);
+                    if (newGoalCard) {
+                        newGoalCard.style.opacity = '0';
+                        newGoalCard.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            newGoalCard.style.transition = 'all 0.3s ease';
+                            newGoalCard.style.opacity = '1';
+                            newGoalCard.style.transform = 'translateY(0)';
+                        }, 100);
+                    }
+                } else {
+                    console.error('Failed to create goal - no result returned');
+                    alert('Failed to create goal. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error adding goal:', error);
+                alert('Error adding goal. Please try again. Error: ' + error.message);
+            }
+        }
+
+        // Update notification functions to use data manager
+        document.querySelector('.mark-all-read-btn').addEventListener('click', function() {
+            dataManager.markAllNotificationsAsRead();
+            this.textContent = 'All Read';
+            this.style.opacity = '0.5';
+        });
+
+        // Initialize data manager
+        dataManager = new DashboardDataManager();
+        
+        // Initialize dashboard with async operations
+        async function initializeDashboard() {
+            try {
+                // Check if migration is needed
+                const migrationCheck = await MigrationService.checkMigrationNeeded();
+                if (migrationCheck.needed) {
+                    console.log('Migration needed:', migrationCheck.reason);
+                    console.log('Data types to migrate:', migrationCheck.dataTypes);
+                    
+                    // Show migration notification
+                    showMigrationNotification();
+                }
+                
+                await dataManager.loadInitialData();
+                await dataManager.updateStats();
+                await dataManager.renderGoals();
+                await dataManager.renderNotifications();
+                console.log('Dashboard enhanced with comprehensive CRUD functionality loaded successfully!');
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+            }
+        }
+        
+        // Show migration notification
+        function showMigrationNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'migration-notification';
+            notification.innerHTML = `
+                <div class="migration-content">
+                    <h4><i class="fas fa-database"></i> Database Migration Available</h4>
+                    <p>We've upgraded to a secure database system. Your local data can be migrated to ensure it's safely stored.</p>
+                    <div class="migration-actions">
+                        <button class="btn btn-primary" onclick="performMigration()">
+                            <i class="fas fa-upload"></i> Migrate Data
+                        </button>
+                        <button class="btn btn-secondary" onclick="dismissMigration()">
+                            <i class="fas fa-times"></i> Dismiss
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.5rem;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                max-width: 400px;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+        }
+        
+        // Perform migration
+        async function performMigration() {
+            try {
+                const result = await MigrationService.performMigration();
+                if (result.success) {
+                    alert('Migration completed successfully! Your data is now safely stored in the database.');
+                    location.reload(); // Reload to refresh the data
+                } else {
+                    alert('Migration failed: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Migration error:', error);
+                alert('Migration failed. Please try again.');
+            }
+        }
+        
+        // Dismiss migration notification
+        function dismissMigration() {
+            const notification = document.querySelector('.migration-notification');
+            if (notification) {
+                notification.remove();
+            }
+        }
+        
+        // Start initialization
+        initializeDashboard();
+        
+        // Mobile Navigation Functionality
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarToggle.classList.toggle('active');
+            mobileNavOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarToggle.classList.remove('active');
+            mobileNavOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listeners
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        mobileNavOverlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+
+        // Close sidebar when clicking on a menu item
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', closeSidebar);
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update theme toggle icons
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = theme === 'dark' ? 'fa-sun' : 'fa-moon';
+            if (themeToggle) {
+                themeToggle.innerHTML = `<i class="fas ${icon}></i>`;
+            }
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+        
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2337 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy - Courses</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Light theme variables */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: rgba(0, 0, 0, 0.05);
+            --bg-card: rgba(0, 0, 0, 0.05);
+            --text-primary: #000000;
+            --text-secondary: rgba(0, 0, 0, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dark theme variables */
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: rgba(255, 255, 255, 0.1);
+            --bg-card: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(0, 0, 0, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: hidden;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .brand-text h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .brand-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .menu-section {
+            margin-bottom: 1rem;
+        }
+
+        .menu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .menu-item.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            background: var(--bg-primary);
+            margin-top: 0;
+        }
+
+        /* Header */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            position: fixed;
+            top: 0;
+            left: 280px;
+            right: 0;
+            z-index: 999;
+        }
+
+
+        .welcome-text {
+            text-align: right;
+        }
+
+        .welcome-text h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .welcome-text p {
+            font-size: 0.625rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+      
+        /* Courses Content */
+        .courses-content {
+            padding: 1rem;
+            margin-top: 70px;
+        }
+
+        .courses-header {
+            margin-bottom: 2rem;
+        }
+
+        .courses-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .courses-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+     
+
+        /* Course Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .course-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary, #16a34a);
+        }
+
+        .course-card.enrolled {
+            border: 2px solid var(--primary, #16a34a);
+            background: var(--glass-bg);
+        }
+
+        .course-card.premium {
+            border: 2px solid #f59e0b;
+            background: var(--glass-bg);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 140px;
+            background: var(--bg-secondary);
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-primary);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .course-image i {
+            position: relative;
+            z-index: 2;
+            color: var(--primary, #16a34a);
+        }
+
+        .course-card:hover .course-image {
+            background: var(--bg-card);
+        }
+
+        .course-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary, #16a34a);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 3;
+        }
+
+        .course-badge.free {
+            background: var(--primary, #16a34a);
+        }
+
+        .course-badge.popular {
+            background: #f59e0b;
+        }
+
+        .course-badge.new {
+            background: #3b82f6;
+        }
+
+        .course-badge.premium {
+            background: #f59e0b;
+        }
+
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0.75rem 0.75rem 0.5rem 0.75rem;
+            line-height: 1.3;
+            min-height: 2.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .course-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0 0.75rem 0.75rem 0.75rem;
+            line-height: 1.4;
+            min-height: 2.2rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 0.75rem 0.75rem 0.75rem;
+            min-height: 1.8rem;
+        }
+
+        .course-stats {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .course-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        .course-stat i {
+            color: var(--primary, #16a34a);
+            font-size: 0.8rem;
+        }
+
+        .course-price {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .course-price.free {
+            color: var(--primary, #16a34a);
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0 0.75rem 0.75rem 0.75rem;
+        }
+
+        .enroll-btn {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            background: var(--primary, #16a34a);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+        }
+
+        .enroll-btn:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+        }
+
+     
+        .preview-btn {
+            padding: 0.6rem 0.8rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preview-btn:hover {
+            background: var(--bg-card);
+            transform: translateY(-1px);
+        }
+
+        .course-progress {
+            margin: 1rem 1rem 0 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary, #16a34a);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Course Grid Layout */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header {
+                left: 0;
+            }
+
+            .courses-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .courses-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+                padding: 0.5rem;
+            }
+
+            .course-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .fab {
+                bottom: 1rem;
+                right: 1rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 300px;
+        }
+
+        .notification.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .notification.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 300px;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animation keyframes */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-secondary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .course-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .course-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .course-badge.free { background: #e3f2fd; color: #1976d2; }
+        .course-badge.popular { background: #f3e5f5; color: #7b1fa2; }
+        .course-badge.new { background: #e8f5e8; color: #388e3c; }
+        .course-badge.premium { background: #fff3e0; color: #f57c00; }
+
+        .course-instructor {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .course-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .course-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stat-item i {
+            color: var(--text-secondary);
+            width: 16px;
+        }
+
+        .course-topics {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .course-topics h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .topics-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .topic-tag {
+            background: var(--bg-card);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: #ec4899;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6);
+            background: #db2777;
+        }
+
+        /* Course Notes Modal */
+        .notes-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notes-modal-content {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .notes-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .notes-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .notes-close:hover {
+            background: var(--bg-secondary);
+        }
+
+        .notes-body {
+            padding: 1.5rem;
+        }
+
+        .notes-section {
+            margin-bottom: 2rem;
+        }
+
+        .notes-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .note-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary, #16a34a);
+        }
+
+        .note-content {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .add-note-form {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .add-note-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .add-note-form button {
+            background: var(--primary, #16a34a);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .add-note-form button:hover {
+            background: #15803d;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h3>SmartStudy</h3>
+                    <p>Student Learning Hub</p>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Learning Hub</div>
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="courses.html" class="menu-item active">
+                    <i class="fas fa-book-open"></i>
+                    <span>Browse Courses</span>
+                </a>
+               
+                <a href="quiz.html" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Take Quiz</span>
+                </a>
+            </div>
+
+          
+
+            <div class="menu-section">
+                
+               
+                <a href="index.html" class="menu-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="hamburger-menu" id="sidebarToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+              
+                <div class="header-right">
+                    <div class="welcome-text">
+                        <h4 id="userName">Welcome Back, Student 👋</h4>
+                        <p>Discover new courses and expand your knowledge</p>
+                    </div>
+                                    </div>
+            </header>
+
+            <!-- Courses Content -->
+            <div class="courses-content">
+                <div class="courses-header">
+                    <h1 class="courses-title">Browse Courses</h1>
+                    <p class="courses-subtitle">Explore a wide range of subjects and enhance your learning journey</p>
+                    
+                    <!-- Search and Filter Bar -->
+                    <div class="search-filter-bar" style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <div class="search-container" style="flex: 1; min-width: 250px;">
+                            <input type="text" id="courseSearch" placeholder="Search courses..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary);">
+                        </div>
+                        <select id="subjectFilter" style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); min-width: 150px;">
+                            <option value="">All Subjects</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="biology">Biology</option>
+                            <option value="computer-science">Computer Science</option>
+                            <option value="literature">Literature</option>
+                            <option value="history">History</option>
+                        </select>
+                        <select id="levelFilter" style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); min-width: 150px;">
+                            <option value="">All Levels</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                        <button onclick="applyFilters()" style="padding: 0.75rem 1.5rem; background: var(--primary, #16a34a); color: white; border: none; border-radius: 8px; cursor: pointer;">Apply Filters</button>
+                        <button onclick="clearFilters()" style="padding: 0.75rem 1.5rem; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer;">Clear</button>
+                    </div>
+                    
+
+                </div>
+
+                
+                <!-- Course Grid -->
+                <div class="courses-grid" id="coursesGrid">
+                    <!-- Courses will be loaded dynamically -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="openNotesModal()" title="Course Notes">
+        <i class="fas fa-sticky-note"></i>
+    </button>
+
+    <!-- Course Notes Modal -->
+    <div id="notesModal" class="notes-modal">
+        <div class="notes-modal-content">
+            <div class="notes-header">
+                <h2>Course Notes</h2>
+                <span class="notes-close" onclick="closeNotesModal()">&times;</span>
+            </div>
+            <div class="notes-body">
+                <div class="notes-section">
+                    <h3>My Notes</h3>
+                    <div id="notesList">
+                        <!-- Notes will be loaded here -->
+                    </div>
+                    <div class="add-note-form">
+                        <h4>Add New Note</h4>
+                        <textarea id="newNoteText" placeholder="Write your note here..."></textarea>
+                        <button onclick="addNewNote()">Save Note</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Course Modal -->
+    <div id="courseModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalCourseTitle">Course Title</h2>
+                <span class="modal-close" onclick="closeCourseModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="course-details">
+                    <div class="course-header">
+                        <div class="course-badge" id="modalCourseBadge"></div>
+                        <div class="course-instructor" id="modalCourseInstructor"></div>
+                    </div>
+                    <div class="course-description" id="modalCourseDescription"></div>
+                    <div class="course-stats-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="modalCourseDuration"></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-book"></i>
+                            <span id="modalCourseLessons"></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span id="modalCourseStudents"></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-signal"></i>
+                            <span id="modalCourseDifficulty"></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span id="modalCourseLevel"></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="modalCourseSubject"></span>
+                        </div>
+                    </div>
+                    <div class="course-topics" id="modalCourseTopics"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCourseModal()">Close</button>
+                <button class="btn-primary" id="modalEnrollBtn" onclick="enrollFromModal()">Enroll Now</button>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <script>
+        // Wait for local database to be ready
+        function waitForLocalDB() {
+            return new Promise((resolve, reject) => {
+                const maxAttempts = 50;
+                let attempts = 0;
+                
+                const checkLocalDB = () => {
+                    attempts++;
+                    
+                    if (typeof localDB !== 'undefined' && localDB.isInitialized) {
+                        console.log('✅ Local database is ready');
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        reject(new Error('Local database failed to initialize after 5 seconds'));
+                    } else {
+                        setTimeout(checkLocalDB, 100);
+                    }
+                };
+                
+                checkLocalDB();
+            });
+        }
+        
+        // Courses array to store all courses
+        let courses = [];
+        
+        // Sample courses data (fallback)
+        const sampleCourses = [
+            // Mathematics Courses
+            {
+                id: 'math-101',
+                title: 'Basic Mathematics',
+                description: 'Foundation course covering arithmetic, fractions, decimals, and basic algebra.',
+                subject: 'mathematics',
+                academicLevel: 'undergraduate',
+                difficulty: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'free',
+                instructor: 'Prof. David Wilson',
+                enrolled: false,
+                progress: 0,
+                topics: ['Arithmetic Fundamentals', 'Fractions & Decimals', 'Basic Algebra', 'Problem Solving']
+            },
+            {
+                id: 'math-201',
+                title: 'Intermediate Algebra',
+                description: 'Advanced algebraic concepts including quadratic equations, functions, and graphs.',
+                subject: 'mathematics',
+                academicLevel: 'undergraduate',
+                difficulty: 'intermediate',
+                duration: '10 weeks',
+                lessons: 20,
+                students: 0,
+                price: 0,
+                badge: 'popular',
+                instructor: 'Dr. Sarah Johnson',
+                enrolled: false,
+                progress: 0,
+                topics: ['Quadratic Equations', 'Functions & Graphs', 'Linear Systems', 'Polynomials']
+            },
+            {
+                id: 'math-301',
+                title: 'Advanced Calculus',
+                description: 'Master calculus, algebra, and trigonometry with practical examples.',
+                subject: 'mathematics',
+                academicLevel: 'undergraduate',
+                difficulty: 'advanced',
+                duration: '12 weeks',
+                lessons: 24,
+                students: 0,
+                price: 0,
+                badge: 'premium',
+                instructor: 'Dr. Sarah Johnson',
+                enrolled: false,
+                progress: 0
+            },
+            
+            // Physics Courses
+            {
+                id: 'physics-101',
+                title: 'Introduction to Physics',
+                description: 'Basic physics concepts including motion, forces, and energy.',
+                subject: 'physics',
+                academicLevel: 'undergraduate',
+                difficulty: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'free',
+                instructor: 'Prof. Lisa Thompson',
+                enrolled: false,
+                progress: 0
+            },
+            {
+                id: 'physics-201',
+                title: 'Physics Fundamentals',
+                description: 'Learn the basics of mechanics, thermodynamics, and wave physics.',
+                subject: 'physics',
+                academicLevel: 'undergraduate',
+                difficulty: 'intermediate',
+                duration: '10 weeks',
+                lessons: 20,
+                students: 0,
+                price: 0,
+                badge: 'new',
+                instructor: 'Prof. Michael Chen',
+                enrolled: false,
+                progress: 0
+            },
+            {
+                id: 'physics-301',
+                title: 'Quantum Physics',
+                description: 'Advanced quantum mechanics and particle physics concepts.',
+                subject: 'physics',
+                academicLevel: 'postgraduate',
+                difficulty: 'advanced',
+                duration: '12 weeks',
+                lessons: 24,
+                students: 0,
+                price: 0,
+                badge: 'premium',
+                instructor: 'Prof. Michael Chen',
+                enrolled: false,
+                progress: 0
+            },
+            
+            // Chemistry Courses
+            {
+                id: 'chemistry-101',
+                title: 'Chemistry Essentials',
+                description: 'Explore atomic structure, chemical bonding, and reactions.',
+                subject: 'chemistry',
+                level: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'trending',
+                instructor: 'Dr. Emily Rodriguez',
+                enrolled: false,
+                progress: 0
+            },
+            {
+                id: 'chemistry-201',
+                title: 'Organic Chemistry',
+                description: 'Study of carbon compounds, reactions, and molecular structures.',
+                subject: 'chemistry',
+                level: 'intermediate',
+                duration: '10 weeks',
+                lessons: 20,
+                students: 0,
+                price: 0,
+                badge: 'popular',
+                instructor: 'Dr. Emily Rodriguez',
+                enrolled: false,
+                progress: 0
+            },
+            {
+                id: 'chemistry-301',
+                title: 'Physical Chemistry',
+                description: 'Advanced concepts in thermodynamics, kinetics, and spectroscopy.',
+                subject: 'chemistry',
+                level: 'advanced',
+                duration: '12 weeks',
+                lessons: 24,
+                students: 0,
+                price: 0,
+                badge: 'premium',
+                instructor: 'Dr. Emily Rodriguez',
+                enrolled: false,
+                progress: 0
+            },
+            
+            // Biology Courses
+            {
+                id: 'biology-101',
+                title: 'Introduction to Biology',
+                description: 'Basic biological concepts including cells, genetics, and evolution.',
+                subject: 'biology',
+                level: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'free',
+                instructor: 'Dr. James Anderson',
+                enrolled: false,
+                progress: 0
+            },
+            {
+                id: 'biology-201',
+                title: 'Cell Biology',
+                description: 'Study of cell structure, function, and cellular processes.',
+                subject: 'biology',
+                level: 'intermediate',
+                duration: '10 weeks',
+                lessons: 20,
+                students: 0,
+                price: 0,
+                badge: 'new',
+                instructor: 'Dr. James Anderson',
+                enrolled: false,
+                progress: 0
+            },
+            
+            // Computer Science Courses
+            {
+                id: 'cs-101',
+                title: 'Programming Fundamentals',
+                description: 'Learn basic programming concepts and problem-solving skills.',
+                subject: 'computer-science',
+                level: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'trending',
+                instructor: 'Prof. Alex Kumar',
+                enrolled: false,
+                progress: 0
+            },
+            {
+                id: 'cs-201',
+                title: 'Data Structures & Algorithms',
+                description: 'Advanced programming concepts and algorithm design.',
+                subject: 'computer-science',
+                level: 'intermediate',
+                duration: '10 weeks',
+                lessons: 20,
+                students: 0,
+                price: 0,
+                badge: 'popular',
+                instructor: 'Prof. Alex Kumar',
+                enrolled: false,
+                progress: 0
+            },
+            
+            // Literature Courses
+            {
+                id: 'lit-101',
+                title: 'World Literature',
+                description: 'Explore classic and contemporary literature from around the world.',
+                subject: 'literature',
+                level: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'free',
+                instructor: 'Dr. Maria Garcia',
+                enrolled: false,
+                progress: 0
+            },
+            
+            // History Courses
+            {
+                id: 'history-101',
+                title: 'World History',
+                description: 'Survey of major historical events and civilizations.',
+                subject: 'history',
+                level: 'beginner',
+                duration: '8 weeks',
+                lessons: 16,
+                students: 0,
+                price: 0,
+                badge: 'free',
+                instructor: 'Prof. Robert Smith',
+                enrolled: false,
+                progress: 0
+            }
+        ];
+        
+                // Load courses from Firebase and mark enrollment state per user
+      
+        // Create course card
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.dataset.courseId = course.id;
+
+            const badgeHtml = course.badge ? `<div class="course-badge ${course.badge}">${course.badge.toUpperCase()}</div>` : '';
+            const priceText = course.price === 0 ? 'Free' : `$${course.price}`;
+            const priceClass = course.price === 0 ? 'free' : '';
+            const enrollText = course.enrolled ? 'Continue' : 'Enroll Now';
+            const progressHtml = course.enrolled ? `
+                <div class="course-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${course.progress}%"></div>
+                    </div>
+                    <div class="progress-text">${course.progress}% Complete</div>
+                </div>
+            ` : '';
+
+            card.innerHTML = `
+                    <div class="course-image">
+                    <i class="fas fa-${getSubjectIcon(course.subject)}"></i>
+                    ${badgeHtml}
+                    </div>
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-description">${course.description}</p>
+                    <div class="course-meta">
+                    <div class="course-stats">
+                        <div class="course-stat">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>${course.academicLevel || 'undergraduate'}</span>
+                    </div>
+                        <div class="course-stat">
+                            <i class="fas fa-clock"></i>
+                            <span>${course.duration}</span>
+                    </div>
+                        <div class="course-stat">
+                            <i class="fas fa-book"></i>
+                            <span>${course.lessons} lessons</span>
+                    </div>
+                        <div class="course-stat">
+                            <i class="fas fa-users"></i>
+                            <span>${course.students} students</span>
+                </div>
+                    </div>
+                    <div class="course-price ${priceClass}">${priceText}</div>
+                </div>
+                <div class="course-actions">
+                    <button class="enroll-btn" onclick="enrollCourse(${course.id})">${enrollText}</button>
+                    <button class="preview-btn" onclick="viewCourse(${course.id})">View Course</button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Render courses in the grid
+        function renderCourses() {
+            const coursesGrid = document.getElementById('coursesGrid');
+            if (!coursesGrid) {
+                console.error('❌ Courses grid not found');
+                return;
+            }
+
+            console.log('🎨 Rendering courses:', courses);
+            console.log('🎨 Courses length:', courses.length);
+            console.log('🎨 Courses type:', typeof courses);
+            
+            // Clear the grid first
+            coursesGrid.innerHTML = '';
+            
+            if (!courses || courses.length === 0) {
+                console.log('⚠️ No courses to render');
+                coursesGrid.innerHTML = '<p>No courses available. Please check back later.</p>';
+                return;
+            }
+            
+            courses.forEach((course, index) => {
+                console.log(`🎨 Rendering course ${index}:`, course);
+                
+                const badgeHtml = course.badge ? `<div class="course-badge ${course.badge}">${course.badge.toUpperCase()}</div>` : '';
+                const priceClass = course.price === 0 ? 'free' : 'paid';
+                const priceText = course.price === 0 ? 'Free' : `$${course.price}`;
+                const enrollText = course.enrolled ? 'Continue Learning' : 'Enroll Now';
+
+
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card';
+                courseCard.innerHTML = `
+                    <div class="course-image">
+                        <i class="fas fa-${getSubjectIcon(course.subject)}"></i>
+                        ${badgeHtml}
+                    </div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description}</p>
+                        
+                                        <div class="course-actions">
+                    <button class="enroll-btn" onclick="enrollCourse('${course.id}')" style="width: 100%;">Enroll Now</button>
+                </div>
+                    </div>
+                `;
+
+                coursesGrid.appendChild(courseCard);
+            });
+        }
+
+        // Get subject icon
+        function getSubjectIcon(subject) {
+            const icons = {
+                'mathematics': 'calculator',
+                'physics': 'atom',
+                'chemistry': 'flask',
+                'biology': 'dna',
+                'computer-science': 'laptop-code',
+                'literature': 'book-open',
+                'history': 'landmark'
+            };
+            return icons[subject] || 'graduation-cap';
+        }
+
+       
+        // Update user stats when actions are performed (Local Database)
+        async function updateUserStats(userId, action, additionalData = {}) {
+            try {
+                if (typeof localDB === 'undefined' || !localDB.isInitialized) {
+                    console.error('Local database not ready');
+                    return;
+                }
+
+                const user = localDB.getDocument('users', userId);
+                if (!user) {
+                    console.error('User not found');
+                    return;
+                }
+
+                let updates = {};
+                
+                switch (action) {
+                    case 'courseEnrolled':
+                        updates = {
+                            'stats.coursesEnrolled': (user.stats?.coursesEnrolled || 0) + 1,
+                            'stats.lastActive': new Date().toISOString()
+                        };
+                        break;
+                    case 'lessonCompleted':
+                        updates = {
+                            'stats.totalStudyHours': (user.stats?.totalStudyHours || 0) + 0.5,
+                            'progress.overallProgress': (user.progress?.overallProgress || 0) + 2,
+                            'stats.lastActive': new Date().toISOString()
+                        };
+                        break;
+                    case 'quizCompleted':
+                        const { score, courseId, quizType } = additionalData;
+                        updates = {
+                            'stats.quizzesTaken': (user.stats?.quizzesTaken || 0) + 1,
+                            'stats.lastActive': new Date().toISOString()
+                        };
+                        
+                        // Update quiz results in user's course progress
+                        if (courseId) {
+                            const enrollments = localDB.queryCollection('enrollments', { 
+                                userId: userId, 
+                                courseId: courseId 
+                            });
+                            
+                            if (enrollments.length > 0) {
+                                const enrollment = enrollments[0];
+                                const quizResults = enrollment.quizResults || [];
+                                quizResults.push({
+                                    score: score,
+                                    type: quizType || 'general',
+                                    completedAt: new Date().toISOString()
+                                });
+                                
+                                localDB.updateDocument('enrollments', enrollment.id, {
+                                    quizResults: quizResults,
+                                    lastAccessed: new Date().toISOString()
+                                });
+                            }
+                        }
+                        break;
+                    case 'courseProgress':
+                        const { courseId: progressCourseId, progress: courseProgress } = additionalData;
+                        if (progressCourseId && courseProgress !== undefined) {
+                            const enrollments = localDB.queryCollection('enrollments', { 
+                                userId: userId, 
+                                courseId: progressCourseId 
+                            });
+                            
+                            if (enrollments.length > 0) {
+                                localDB.updateDocument('enrollments', enrollments[0].id, {
+                                    progress: courseProgress,
+                                    lastAccessed: new Date().toISOString()
+                                });
+                            }
+                        }
+                        break;
+                }
+
+                if (Object.keys(updates).length > 0) {
+                    localDB.updateDocument('users', userId, updates);
+                }
+            } catch (error) {
+                console.error('Error updating user stats:', error);
+            }
+        }
+        
+        // Global function for other pages to call (Local Database)
+        window.updateUserProgress = async function(action, additionalData = {}) {
+            if (typeof localAuth !== 'undefined' && localAuth.isUserAuthenticated()) {
+                const currentUser = localAuth.getCurrentUser();
+                if (currentUser) {
+                    await updateUserStats(currentUser.uid, action, additionalData);
+                    console.log(`User progress updated: ${action}`, additionalData);
+                } else {
+                    console.warn('No authenticated user found for progress update');
+                }
+            } else {
+                console.warn('No authenticated user found for progress update');
+            }
+        };
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                max-width: 400px;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        function viewCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (course) {
+                // Store the selected course in localStorage for the course viewer
+                localStorage.setItem('selectedCourse', JSON.stringify(course));
+                window.location.href = 'course-viewer.html';
+            }
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('pendingUser');
+            localStorage.removeItem('userData');
+            window.location.href = 'index.html';
+            }
+        });
+
+                // Initialize courses
+        console.log('Courses page loaded successfully!');
+        
+        // Seed courses collection in local database
+        async function seedCoursesCollection() {
+            try {
+                console.log('🌱 Seeding courses collection in local database...');
+                
+                for (const course of sampleCourses) {
+                    const courseData = {
+                        title: course.title,
+                        description: course.description,
+                        subject: course.subject,
+                        level: course.academicLevel || 'undergraduate',
+                        duration: course.duration,
+                        lessons: course.lessons,
+                        students: 0, // Start with 0 students
+                        price: course.price,
+                        badge: course.badge,
+                        instructor: course.instructor,
+                        enrolledStudents: [], // Empty array initially
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    localDB.addDocument('courses', courseData);
+                    console.log(`✅ Course ${course.id} (${course.title}) seeded`);
+                }
+                
+                console.log('🌱 All courses seeded successfully!');
+                
+            } catch (error) {
+                console.error('❌ Error seeding courses:', error);
+            }
+        }
+        
+        // Set up local database updates for user progress
+        function setupLocalDBUpdates() {
+            if (typeof localAuth === 'undefined' || !localAuth.isUserAuthenticated()) return;
+            
+            const currentUser = localAuth.getCurrentUser();
+            if (!currentUser) return;
+            
+            console.log('🔄 Setting up local database updates for user:', currentUser.email);
+            
+            // Check for updates every 5 seconds
+            setInterval(() => {
+                checkEnrollmentStatus();
+            }, 5000);
+        }
+        
+        // Setup local database updates after initialization
+        function setupLocalDBUpdatesAfterInit() {
+            setTimeout(setupLocalDBUpdates, 2000); // Give local database time to initialize
+        }
+        
+        // Test function for seeding courses
+        window.seedCourses = async function() {
+            console.log('🌱 Manual course seeding...');
+            await seedCoursesCollection();
+        };
+        
+        // Test function for local database updates
+        window.testLocalDBUpdates = async function() {
+            console.log('🧪 Testing local database updates...');
+            try {
+                if (typeof localAuth === 'undefined' || !localAuth.isUserAuthenticated()) {
+                    console.log('❌ No authenticated user');
+                    return;
+                }
+                
+                const currentUser = localAuth.getCurrentUser();
+                if (!currentUser) {
+                    console.log('❌ No authenticated user');
+                    return;
+                }
+                
+                // Test updating user stats
+                await updateUserProgress('quizCompleted', {
+                    score: 85,
+                    courseId: '1',
+                    quizType: 'test'
+                });
+                
+                console.log('✅ Test update completed');
+                
+            } catch (error) {
+                console.error('❌ Test failed:', error);
+            }
+        };
+        
+        // Debug function to check local database status
+        window.debugLocalDB = function() {
+            console.log('🔍 Local Database Debug Information:');
+            console.log('Local DB loaded:', typeof localDB !== 'undefined');
+            console.log('Local DB initialized:', localDB?.isInitialized);
+            console.log('Local Auth available:', typeof localAuth !== 'undefined');
+            console.log('Local Auth authenticated:', localAuth?.isUserAuthenticated());
+            
+            if (localAuth?.isUserAuthenticated()) {
+                const currentUser = localAuth.getCurrentUser();
+                console.log('Current user:', currentUser?.uid);
+                console.log('User email:', currentUser?.email);
+            } else {
+                console.log('No authenticated user');
+            }
+            
+            console.log('Courses data:', courses);
+            console.log('Courses length:', courses.length);
+        };
+        
+        // Debug courses function
+        window.debugCourses = function() {
+            console.log('🔍 Debugging courses...');
+            console.log('Courses array:', courses);
+            console.log('Courses length:', courses.length);
+            console.log('Courses type:', typeof courses);
+            console.log('CoursesGrid element:', document.getElementById('coursesGrid'));
+            console.log('Sample courses:', sampleCourses);
+            
+            if (typeof localDB !== 'undefined') {
+                console.log('LocalDB courses:', localDB.getCollection('courses'));
+            }
+        };
+        
+        // Force render function
+        window.forceRender = function() {
+            console.log('🔄 Force rendering courses...');
+            if (courses && courses.length > 0) {
+                renderCourses();
+            } else {
+                console.log('No courses to render, loading sample data...');
+                courses = [...sampleCourses];
+                renderCourses();
+            }
+        };
+        
+        // Show user's study level and available courses (Local Database)
+        window.showUserLevel = async function() {
+            console.log('🎓 Checking user study level...');
+            
+            if (typeof localAuth === 'undefined' || !localAuth.isUserAuthenticated()) {
+                console.log('❌ No authenticated user');
+                return;
+            }
+            
+            const currentUser = localAuth.getCurrentUser();
+            if (!currentUser) {
+                console.log('❌ No authenticated user');
+                return;
+            }
+            
+            try {
+                const userDoc = localDB.getDocument('users', currentUser.uid);
+                
+                if (userDoc) {
+                    const userData = userDoc;
+                    const studyLevel = userData.studyLevel || 'beginner';
+                    const university = userData.university || 'Not specified';
+                    
+                    console.log('👤 User Profile:');
+                    console.log('  - Study Level:', studyLevel);
+                    console.log('  - University:', university);
+                    console.log('  - Email:', currentUser.email);
+                    
+                    // Show available course levels
+                    const academicLevelHierarchy = {
+                        'undergraduate': ['undergraduate'],
+                        'postgraduate': ['undergraduate', 'postgraduate'],
+                        'phd': ['undergraduate', 'postgraduate', 'phd']
+                    };
+                    
+                    const allowedLevels = academicLevelHierarchy[studyLevel] || ['undergraduate'];
+                    console.log('📚 Available Academic Levels:', allowedLevels);
+                    
+                    // Show courses by academic level
+                    const coursesByAcademicLevel = {};
+                    courses.forEach(course => {
+                        if (!coursesByAcademicLevel[course.academicLevel]) {
+                            coursesByAcademicLevel[course.academicLevel] = [];
+                        }
+                        coursesByAcademicLevel[course.academicLevel].push(course.title);
+                    });
+                    
+                    console.log('📖 Courses by Academic Level:');
+                    Object.keys(coursesByAcademicLevel).forEach(academicLevel => {
+                        if (allowedLevels.includes(academicLevel)) {
+                            console.log(`  ✅ ${academicLevel.toUpperCase()}:`, coursesByAcademicLevel[academicLevel]);
+                        } else {
+                            console.log(`  ❌ ${academicLevel.toUpperCase()}:`, coursesByAcademicLevel[academicLevel]);
+                        }
+                    });
+                    
+                } else {
+                    console.log('❌ User document not found');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error checking user level:', error);
+            }
+        };
+        
+        // Test enrollment without Firebase (for debugging)
+        window.testEnrollment = function(courseId) {
+            console.log('🧪 Testing enrollment without Firebase for course:', courseId);
+            
+            const course = courses.find(c => String(c.id) === String(courseId));
+            if (!course) {
+                console.error('❌ Course not found:', courseId);
+                return;
+            }
+            
+            console.log('✅ Course found:', course);
+            console.log('✅ Course data structure:', {
+                id: course.id,
+                title: course.title,
+                subject: course.subject,
+                enrolled: course.enrolled,
+                progress: course.progress
+            });
+            
+            // Simulate enrollment
+            course.enrolled = true;
+            course.progress = 0;
+            
+            // Re-render courses
+            renderCourses();
+            console.log('✅ Test enrollment completed - course should now show as enrolled');
+        };
+        
+        // Mobile Navigation Functionality
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarToggle.classList.toggle('active');
+            mobileNavOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarToggle.classList.remove('active');
+            mobileNavOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listeners
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        mobileNavOverlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+
+        // Close sidebar when clicking on a menu item
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', closeSidebar);
+        });
+
+        // Theme toggle functionality is already handled above
+
+        // Course Modal Functions
+        let currentModalCourseId = null;
+
+        // View Course Modal
+        function viewCourse(courseId) {
+            console.log('🔍 Opening course modal for:', courseId);
+            
+            const course = courses.find(c => String(c.id) === String(courseId));
+            if (!course) {
+                console.error('❌ Course not found:', courseId);
+                return;
+            }
+
+            currentModalCourseId = courseId;
+            
+            // Populate modal with course data
+            document.getElementById('modalCourseTitle').textContent = course.title;
+            document.getElementById('modalCourseBadge').textContent = course.badge || 'Course';
+            document.getElementById('modalCourseBadge').className = `course-badge ${course.badge || 'free'}`;
+            document.getElementById('modalCourseInstructor').textContent = `Instructor: ${course.instructor}`;
+            document.getElementById('modalCourseDescription').textContent = course.description;
+            document.getElementById('modalCourseDuration').textContent = course.duration;
+            document.getElementById('modalCourseLessons').textContent = `${course.lessons} lessons`;
+            document.getElementById('modalCourseStudents').textContent = `${course.students} students`;
+            document.getElementById('modalCourseDifficulty').textContent = course.difficulty;
+            document.getElementById('modalCourseLevel').textContent = course.academicLevel;
+            document.getElementById('modalCourseSubject').textContent = course.subject;
+
+            // Add topics if available
+            const topicsContainer = document.getElementById('modalCourseTopics');
+            if (course.topics && course.topics.length > 0) {
+                topicsContainer.innerHTML = `
+                    <h4>Course Topics</h4>
+                    <div class="topics-list">
+                        ${course.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}
+                    </div>
+                `;
+            } else {
+                topicsContainer.innerHTML = `
+                    <h4>Course Topics</h4>
+                    <div class="topics-list">
+                        <span class="topic-tag">${course.subject} fundamentals</span>
+                        <span class="topic-tag">Practical applications</span>
+                        <span class="topic-tag">Assessment & quizzes</span>
+                    </div>
+                `;
+            }
+
+            // Update enroll button text and functionality
+            const enrollBtn = document.getElementById('modalEnrollBtn');
+            if (course.enrolled) {
+                enrollBtn.textContent = 'Continue Learning';
+                enrollBtn.onclick = () => {
+                    closeCourseModal();
+                    // Redirect to course viewer or dashboard
+                    window.location.href = 'course-viewer.html?courseId=' + courseId;
+                };
+            } else {
+                enrollBtn.textContent = 'Enroll Now';
+                enrollBtn.onclick = enrollFromModal;
+            }
+
+            // Show modal
+            document.getElementById('courseModal').style.display = 'flex';
+        }
+
+        // Close Course Modal
+        function closeCourseModal() {
+            document.getElementById('courseModal').style.display = 'none';
+            currentModalCourseId = null;
+        }
+
+        // Enroll from Modal
+        async function enrollFromModal() {
+            if (!currentModalCourseId) {
+                console.error('❌ No course selected for enrollment');
+                return;
+            }
+            
+            await enrollCourse(currentModalCourseId);
+            closeCourseModal();
+        }
+
+        // Enroll Course Function
+        function enrollCourse(courseId) {
+            console.log('🔍 Starting enrollment for course:', courseId);
+            
+            // Find the course
+            const course = courses.find(c => String(c.id) === String(courseId));
+            if (!course) {
+                console.error('❌ Course not found:', courseId);
+                alert('Course not found');
+                return;
+            }
+
+            console.log('✅ Course found:', course.title);
+
+            // Check if already enrolled
+            if (course.enrolled) {
+                console.log('✅ User already enrolled in this course');
+                alert('You are already enrolled in this course');
+                return;
+            }
+
+            // Show enrollment success message
+            alert(`🎉 Successfully enrolled in ${course.title}! You will be notified when the course is ready.`);
+
+            // Update local course state
+            course.enrolled = true;
+
+            // Update the button to show enrolled status
+            const enrollBtn = document.querySelector(`[onclick="enrollCourse('${courseId}')"]`);
+            if (enrollBtn) {
+                enrollBtn.textContent = 'Enrolled ✓';
+                enrollBtn.style.background = '#10b981';
+                enrollBtn.onclick = null;
+                enrollBtn.style.cursor = 'default';
+            }
+
+            console.log('✅ Course enrollment successful');
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Initialize courses when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Courses page loaded, initializing...');
+            
+            try {
+                // Wait for local database to be ready
+                await waitForLocalDB();
+                
+                // Load courses from local database or use sample data
+                await loadCoursesFromLocalDB();
+                
+                // Render courses
+                renderCourses();
+                
+                // Setup local database updates
+                setupLocalDBUpdatesAfterInit();
+                
+                console.log('✅ Courses page initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize courses page:', error);
+                // Fallback to sample data
+                courses = [...sampleCourses];
+                renderCourses();
+            }
+        });
+
+        // Load courses from local database
+        async function loadCoursesFromLocalDB() {
+            try {
+                console.log('📚 Loading courses from local database...');
+                console.log('📚 LocalDB available:', typeof localDB !== 'undefined');
+                console.log('📚 LocalDB initialized:', localDB?.isInitialized);
+                
+                // Get courses from local database
+                const dbCourses = localDB.getCollection('courses');
+                console.log('📚 Database courses:', dbCourses);
+                
+                if (dbCourses && dbCourses.length > 0) {
+                    console.log(`✅ Found ${dbCourses.length} courses in local database`);
+                    courses = dbCourses;
+                } else {
+                    console.log('ℹ️ No courses in local database, using sample data');
+                    console.log('📚 Sample courses:', sampleCourses);
+                    courses = [...sampleCourses];
+                    
+                    // Save sample courses to local database
+                    sampleCourses.forEach(course => {
+                        localDB.addDocument('courses', course);
+                    });
+                }
+
+                console.log('📚 Final courses array:', courses);
+                console.log('📚 Courses length:', courses.length);
+
+                // Check enrollment status for current user
+                if (typeof localAuth !== 'undefined' && localAuth.isUserAuthenticated()) {
+                    await checkEnrollmentStatus();
+                }
+
+            } catch (error) {
+                console.error('❌ Error loading courses from local database:', error);
+                // Fallback to sample data
+                courses = [...sampleCourses];
+            }
+        }
+
+        // Check enrollment status for current user
+        async function checkEnrollmentStatus() {
+            try {
+                const currentUser = localAuth.getCurrentUser();
+                if (!currentUser) return;
+
+                console.log('🔍 Checking enrollment status for user:', currentUser.email);
+                
+                // Get user's enrollments
+                const enrollments = localDB.queryCollection('enrollments', { userId: currentUser.uid });
+                
+                // Mark courses as enrolled
+                courses.forEach(course => {
+                    const enrollment = enrollments.find(e => e.courseId === course.id);
+                    if (enrollment) {
+                        course.enrolled = true;
+                        course.progress = enrollment.progress || 0;
+                        console.log(`✅ Course ${course.id} (${course.title}) - Enrolled, Progress: ${course.progress}%`);
+                    } else {
+                        course.enrolled = false;
+                        console.log(`❌ Course ${course.id} (${course.title}) - Not enrolled`);
+                    }
+                });
+
+                const enrolledCount = courses.filter(c => c.enrolled).length;
+                console.log(`📊 Enrollment Summary: ${enrolledCount}/${courses.length} courses enrolled`);
+
+            } catch (error) {
+                console.error('❌ Error checking enrollment status:', error);
+                // Mark all courses as unenrolled on error
+                courses.forEach(course => {
+                    course.enrolled = false;
+                });
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('courseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCourseModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCourseModal();
+                closeNotesModal();
+            }
+        });
+
+        // Course Notes Functions
+        function openNotesModal() {
+            document.getElementById('notesModal').style.display = 'flex';
+            loadCourseNotes();
+        }
+
+        function closeNotesModal() {
+            document.getElementById('notesModal').style.display = 'none';
+        }
+
+        function loadCourseNotes() {
+            const notesList = document.getElementById('notesList');
+            const notes = JSON.parse(localStorage.getItem('courseNotes') || '[]');
+            
+            if (notes.length === 0) {
+                notesList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No notes yet. Start taking notes to see them here!</p>';
+                return;
+            }
+
+            notesList.innerHTML = notes.map((note, index) => `
+                <div class="note-item">
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-meta">
+                        <span>${note.courseTitle || 'General Note'}</span>
+                        <span>${new Date(note.createdAt).toLocaleDateString()}</span>
+                        <button onclick="deleteNote(${index})" style="background: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addNewNote() {
+            const noteText = document.getElementById('newNoteText').value.trim();
+            if (!noteText) {
+                alert('Please enter a note');
+                return;
+            }
+
+            const notes = JSON.parse(localStorage.getItem('courseNotes') || '[]');
+            const newNote = {
+                content: noteText,
+                courseTitle: 'General Note',
+                createdAt: new Date().toISOString()
+            };
+
+            notes.unshift(newNote);
+            localStorage.setItem('courseNotes', JSON.stringify(notes));
+            
+            document.getElementById('newNoteText').value = '';
+            loadCourseNotes();
+            showNotification('Note saved successfully!', 'success');
+        }
+
+        function deleteNote(index) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                const notes = JSON.parse(localStorage.getItem('courseNotes') || '[]');
+                notes.splice(index, 1);
+                localStorage.setItem('courseNotes', JSON.stringify(notes));
+                loadCourseNotes();
+                showNotification('Note deleted successfully!', 'success');
+            }
+        }
+
+        function addCourseNote(courseId, courseTitle) {
+            const noteText = prompt(`Add a note for ${courseTitle}:`);
+            if (noteText && noteText.trim()) {
+                const notes = JSON.parse(localStorage.getItem('courseNotes') || '[]');
+                const newNote = {
+                    content: noteText.trim(),
+                    courseId: courseId,
+                    courseTitle: courseTitle,
+                    createdAt: new Date().toISOString()
+                };
+
+                notes.unshift(newNote);
+                localStorage.setItem('courseNotes', JSON.stringify(notes));
+                showNotification('Note added successfully!', 'success');
+            }
+        }
+
+        // Close notes modal when clicking outside
+        document.getElementById('notesModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNotesModal();
+            }
+        });
+
+        // Filter and Search Functions
+        function applyFilters() {
+            const searchTerm = document.getElementById('courseSearch').value.toLowerCase();
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const levelFilter = document.getElementById('levelFilter').value;
+
+            const filteredCourses = courses.filter(course => {
+                const matchesSearch = course.title.toLowerCase().includes(searchTerm) || 
+                                   course.description.toLowerCase().includes(searchTerm);
+                const matchesSubject = !subjectFilter || course.subject === subjectFilter;
+                const matchesLevel = !levelFilter || course.difficulty === levelFilter || 
+                                   course.academicLevel === levelFilter;
+
+                return matchesSearch && matchesSubject && matchesLevel;
+            });
+
+            renderFilteredCourses(filteredCourses);
+        }
+
+        function clearFilters() {
+            document.getElementById('courseSearch').value = '';
+            document.getElementById('subjectFilter').value = '';
+            document.getElementById('levelFilter').value = '';
+            renderCourses();
+        }
+
+        function renderFilteredCourses(filteredCourses) {
+            const coursesGrid = document.getElementById('coursesGrid');
+            if (!coursesGrid) return;
+
+            coursesGrid.innerHTML = '';
+            
+            if (filteredCourses.length === 0) {
+                coursesGrid.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No courses match your filters. Try adjusting your search criteria.</p>';
+                return;
+            }
+
+            filteredCourses.forEach(course => {
+                const courseCard = createCourseCard(course);
+                coursesGrid.appendChild(courseCard);
+            });
+        }
+
+        // Add search functionality on input
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('courseSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    if (this.value.trim() === '') {
+                        renderCourses();
+                    } else {
+                        applyFilters();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>  

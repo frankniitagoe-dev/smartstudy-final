@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartStudy - Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* Force light theme on this page */
+    * { box-sizing: border-box; }
+    :root { 
+      --bg-primary:#ffffff; 
+      --bg-secondary:rgba(0,0,0,.05); 
+      --bg-card:rgba(0,0,0,.05);
+      --text-primary:#000000; 
+      --text-secondary:rgba(0,0,0,.7); 
+      --border-color:rgba(0,0,0,.1);
+      --glass-bg:rgba(255,255,255,.9); 
+      --glass-border:rgba(0,0,0,.1);
+      --primary:#16a34a;
+      --header-offset: 72px;
+    }
+    /* Override any dark toggle to still use light tokens */
+    [data-theme="dark"] { 
+      --bg-primary:#ffffff; 
+      --bg-secondary:rgba(0,0,0,.05); 
+      --bg-card:rgba(0,0,0,.05);
+      --text-primary:#000000; 
+      --text-secondary:rgba(0,0,0,.7); 
+      --border-color:rgba(0,0,0,.1);
+      --glass-bg:rgba(255,255,255,.9); 
+      --glass-border:rgba(0,0,0,.1);
+      --primary:#16a34a;
+      --header-offset: 72px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); overflow-x:hidden; margin:0; }
+    .dashboard-layout{ display:flex; min-height:100vh; }
+    .sidebar{ width:280px; background:var(--glass-bg); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-right:1px solid var(--border-color); padding:0 1rem 1rem; position:fixed; top:0; left:0; bottom:0; height:100vh; overflow-y:hidden; z-index:1000; }
+    .sidebar-header{ display:flex; align-items:center; gap:.75rem; margin-bottom:1.5rem; padding-bottom:.75rem; border-bottom:1px solid var(--border-color); }
+    .brand-logo{ width:40px; height:40px; background:var(--bg-secondary); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--text-primary); font-weight:600; }
+    .brand-text h3{ font-size:1.25rem; margin:0; }
+    .menu-section{ margin-bottom:1rem; }
+    .menu-title{ font-size:.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.5px; margin-bottom:1rem; }
+    .menu-item{ display:flex; align-items:center; gap:.75rem; padding:.5rem .75rem; border-radius:8px; color:var(--text-secondary); text-decoration:none; transition:.2s; margin-bottom:.25rem; }
+    .menu-item:hover, .menu-item.active{ background:var(--bg-card); color:var(--text-primary); }
+    .menu-item i{ width:20px; text-align:center; }
+    .main-content{ flex:1; margin-left:280px; background:var(--bg-primary); }
+    .header{ background:var(--glass-bg); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); padding:1rem 2rem; border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between; gap:2rem; position:fixed; top:0; left:280px; right:0; z-index:999; }
+    .search-container{ flex:1; max-width:400px; }
+    .search-input{ width:100%; padding:.75rem 1rem; border:1px solid var(--border-color); border-radius:8px; font-size:.875rem; background:var(--bg-secondary); color:var(--text-primary); }
+    .header-right{ display:flex; align-items:center; gap:1.5rem; }
+    .welcome-text h4{ margin:0; font-size:.875rem; }
+    .welcome-text p{ margin:0; font-size:.625rem; color:var(--text-secondary); }
+    .theme-toggle{ display:none !important; }
+    /* Page container spacing below fixed header */
+    /* Container offset matches header height dynamically */
+    .container{ max-width:1100px; margin:0 auto; padding: calc(var(--header-offset, 72px) + 12px) 16px 24px; }
+    :root { --primary:#16a34a; }
+    .title { font-size: 1.75rem; font-weight: 700; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin: 0 0 16px; }
+    .subtitle { color: var(--text-secondary); font-size: .95rem; }
+    .chip { padding:.25rem .6rem; border-radius:999px; border:1px solid var(--glass-border); background:var(--bg-secondary); font-size:.8rem; font-weight:500; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; padding:10px 12px; }
+    .meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .mini-progress { width:220px; height:8px; background:var(--bg-secondary); border-radius:999px; overflow:hidden; }
+    .mini-progress-fill { height:100%; width:0%; background: var(--primary); transition: width .3s ease; }
+    .timer { font-weight:600; }
+    .grid { display:grid; grid-template-columns: 1fr 340px; gap:20px; margin-top:16px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; box-shadow: 0 6px 16px rgba(2,6,23,.06); color: var(--text-primary); }
+    .q-card { padding:18px; }
+    .q-number { background: var(--primary); color:#fff; padding:.35rem .7rem; border-radius:999px; font-size:.85rem; font-weight:600; }
+    .q-text { margin:14px 0 14px; font-size:1.05rem; line-height:1.6; color: var(--text-primary); }
+    .opts { display:flex; flex-direction:column; gap:10px; }
+    .opt { display:flex; align-items:center; gap:10px; padding:12px 14px; border:2px solid var(--border-color, #e5e7eb); border-radius:10px; cursor:pointer; transition:.2s; background: var(--glass-bg); color: var(--text-primary); }
+    .opt:hover { background: var(--bg-card); border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .opt.sel { background: var(--primary); color:#fff; border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .ol { width:32px; height:32px; border-radius:50%; background: var(--bg-secondary); display:flex; align-items:center; justify-content:center; font-weight:700; color: var(--text-primary); }
+    .footer { position: sticky; bottom:0; display:flex; justify-content:space-between; align-items:center; gap:8px; background: var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; padding:10px; margin-top:12px; }
+    .btn { padding:.7rem 1.2rem; border-radius:8px; border:1px solid transparent; cursor:pointer; font-weight:600; }
+    .btn.primary { background: var(--primary); color:#fff; }
+    .btn.primary:disabled { 
+      background: var(--bg-secondary); 
+      color: var(--text-secondary); 
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .btn.primary:not(:disabled):hover { 
+      background: #15803d; 
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
+    }
+    .btn.secondary { background:#e5e7eb; }
+    .side { display:flex; flex-direction:column; gap:12px; }
+    .timer-card { padding:16px; text-align:center; }
+    .circle { width:110px; height:110px; border-radius:50%; border:3px solid var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto; font-size:1.8rem; font-weight:800; }
+    .list { padding:16px; }
+    .list h3 { margin:0 0 10px; font-size:1rem; }
+    .qgrid { display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; }
+    .qi { height:34px; border-radius:999px; background: var(--glass-bg); display:flex; align-items:center; justify-content:center; font-weight:700; cursor:pointer; color: var(--text-primary); border:1px solid var(--glass-border); }
+    .qi:hover{ background: var(--bg-card); }
+    .qi.cur { background: var(--primary); color:#fff; }
+    .qi.ans { background: #3b82f6; color:#fff; }
+    /* Course selection */
+    .courses { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:16px; }
+    .course { display:flex; gap:12px; align-items:center; padding:16px; border-radius:14px; background: var(--glass-bg); border:1px solid var(--glass-border); cursor:pointer; box-shadow: 0 6px 16px rgba(2,6,23,.04); color: var(--text-primary); transition: .2s; }
+    .course:hover{ background: var(--bg-card); }
+    .course.sel { 
+      outline:2px solid var(--primary); 
+      background: var(--bg-card);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .cicon { width:56px; height:56px; border-radius:12px; background: var(--bg-secondary); display:flex; align-items:center; justify-content:center; font-size:1.4rem; color: var(--text-primary); }
+    .sets { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+    .setbtn { padding:.4rem .7rem; border:1px solid var(--glass-border); background: var(--glass-bg); border-radius:8px; cursor:pointer; }
+    .setbtn:hover{ background: var(--bg-card); }
+    .setbtn.active { 
+      background: var(--primary); 
+      color:#fff; 
+      border-color: var(--primary);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    }
+    
+    /* Additional quiz-specific styles */
+    .quiz-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .quiz-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    
+    .quiz-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+    
+    .question-container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--glass-bg);
+      color: var(--text-primary);
+    }
+    
+    .option-item:hover {
+      background: var(--bg-card);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .option-item.selected {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    
+    .option-letter {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    
+    .option-item.selected .option-letter {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    
+    .quiz-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+    }
+    
+    .nav-button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+    
+    .nav-button.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    
+    .nav-button.primary:hover {
+      background: #15803d;
+      transform: translateY(-2px);
+    }
+    
+    .nav-button.secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    
+    .nav-button.secondary:hover {
+      background: var(--bg-card);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .timer-display {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 20px 0;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 15px;
+      }
+      
+      .quiz-title {
+        font-size: 2rem;
+      }
+      
+      .question-container {
+        padding: 20px;
+      }
+      
+      .option-item {
+        padding: 14px 16px;
+      }
+      
+      .quiz-navigation {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Dashboard Layout Nav (same pattern as dashboard) -->
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><i class="fas fa-graduation-cap"></i></div>
+        <div class="brand-text"><h3>SmartStudy</h3><p>Student Learning Hub</p></div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-title">Learning Hub</div>
+        <a href="dashboard.html" class="menu-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+        <a href="courses.html" class="menu-item"><i class="fas fa-book-open"></i><span>Browse Courses</span></a>
+        
+        <a href="quiz.html" class="menu-item active"><i class="fas fa-question-circle"></i><span>Take Quiz</span></a>
+      </div>
+    
+      <div class="menu-section">
+        
+        <a href="index.html" class="menu-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="header">
+        <div class="search-container"><input type="text" class="search-input" placeholder="Search courses or quizzes..."></div>
+        <div class="header-right">
+          <div class="welcome-text"><h4 id="userName">Ready to practice?</h4><p>Select a course to begin</p></div>
+         
+    
+        </div>
+      </header>
+      <div class="container">
+    <header class="page-header">
+      <div>
+        <div class="title">Start a Quiz</div>
+        <div class="subtitle">Choose a course you have registered. Each course has 3 quiz sets.</div>
+      </div>
+    </header>
+
+    <section id="select">
+      <div class="courses">
+        <!-- Computer Science -->
+        <div class="course" data-course="computer-science">
+          <div class="cicon"><i class="fas fa-laptop-code"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Computer Science Quiz</div>
+            <div class="subtitle">Programming fundamentals</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mathematics -->
+        <div class="course" data-course="mathematics">
+          <div class="cicon"><i class="fas fa-calculator"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Mathematics Quiz</div>
+            <div class="subtitle">Algebra and calculus</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Physics -->
+        <div class="course" data-course="physics">
+          <div class="cicon"><i class="fas fa-atom"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Physics Quiz</div>
+            <div class="subtitle">Mechanics and basics</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chemistry -->
+        <div class="course" data-course="chemistry">
+          <div class="cicon"><i class="fas fa-flask"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Chemistry Quiz</div>
+            <div class="subtitle">General chemistry</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Biology -->
+        <div class="course" data-course="biology">
+          <div class="cicon"><i class="fas fa-dna"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Biology Quiz</div>
+            <div class="subtitle">Life sciences</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="course" data-course="history">
+          <div class="cicon"><i class="fas fa-landmark"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">History Quiz</div>
+            <div class="subtitle">World history</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Literature -->
+        <div class="course" data-course="literature">
+          <div class="cicon"><i class="fas fa-book-open"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Literature Quiz</div>
+            <div class="subtitle">Classic and modern literature</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Geography -->
+        <div class="course" data-course="geography">
+          <div class="cicon"><i class="fas fa-globe"></i></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">Geography Quiz</div>
+            <div class="subtitle">World geography and cultures</div>
+            <div class="sets">
+              <button class="setbtn" data-set="set-1">Set 1</button>
+              <button class="setbtn" data-set="set-2">Set 2</button>
+              <button class="setbtn" data-set="set-3">Set 3</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top:12px; display:flex; justify-content:center;">
+        <button class="btn primary" id="begin" disabled><i class="fas fa-play"></i> Start Quiz</button>
+      </div>
+      <div class="subtitle" style="margin-top:10px; text-align:center;">10 questions per set • 30s per question • Progress is saved automatically</div>
+      <div class="subtitle" style="margin-top:8px; text-align:center; color:var(--primary); font-weight:500;">
+        <i class="fas fa-info-circle"></i> Select a course and quiz set to begin
+      </div>
+    </section>
+
+    <section id="quiz" style="display:none;">
+      <div class="topbar">
+        <div class="meta">
+          <span class="chip" id="chipSet">Set 1</span>
+          <div class="mini-progress"><div class="mini-progress-fill" id="mini"></div></div>
+        </div>
+        <div class="timer">Time: <span id="ttop">30</span>s</div>
+      </div>
+      <div class="grid">
+        <div>
+          <div class="card q-card">
+            <span class="q-number" id="qNo">Question 1</span>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="opts"></div>
+          </div>
+          <div class="footer">
+            <button class="btn secondary" id="prev" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+            <button class="btn primary" id="next">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <aside class="side">
+          <div class="card timer-card"><div class="circle" id="tmain">30</div><div class="subtitle">Timer remaining</div></div>
+          <div class="card list"><h3>Questions</h3><div class="qgrid" id="qgrid"></div></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="result" style="display:none;">
+      <div class="card" style="padding:22px; text-align:center;">
+        <div style="width:120px;height:120px;border-radius:50%;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;font-weight:800;" id="score">0%</div>
+        <div class="title" id="grade">Great Job!</div>
+        <div class="subtitle" id="summary">You scored 0 of 0</div>
+        
+        <div style="margin:20px 0; display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-size:1.5rem; font-weight:700; color:var(--primary);" id="timeSpent">0s</div>
+            <div style="font-size:0.875rem; color:var(--text-secondary);">Time Spent</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.5rem; font-weight:700; color:var(--primary);" id="avgTime">0s</div>
+            <div style="font-size:0.875rem; color:var(--text-secondary);">Avg/Question</div>
+          </div>
+        </div>
+        
+        <div style="margin-top:12px; display:flex; justify-content:center;">
+          <button class="btn primary" id="retake">Retake</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+  
+  <script>
+    // Dynamically set container top offset to match fixed header height
+    (function(){
+      function adjustHeaderOffset(){
+        const header = document.querySelector('.main-content .header');
+        if(!header) return;
+        const h = header.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--header-offset', h + 'px');
+      }
+      window.addEventListener('load', adjustHeaderOffset);
+      window.addEventListener('resize', adjustHeaderOffset);
+      // In case fonts change size slightly after load
+      setTimeout(adjustHeaderOffset, 250);
+    })();
+
+
+
+    // Built-in quiz bank (fallback). Firestore sets recommended later
+    const bank = {
+      'computer-science': { title:'Computer Science Quiz', subtitle:'Programming fundamentals', qs:[
+        {q:'What is a variable?', o:['A storage for data','A loop','A function','An error'], a:0},
+        {q:'Which structure is LIFO?', o:['Queue','Stack','Array','Graph'], a:1},
+        {q:'HTML stands for?', o:['HyperText Markup Language','High Tech Modern Language','Home Tool Markup Language','Hyperlink and Text Markup Language'], a:0},
+        {q:'Binary search complexity?', o:['O(1)','O(log n)','O(n)','O(n^2)'], a:1},
+        {q:'JS runs on?', o:['Browser/Node runtimes','Only Database','Only OS Kernel','Only JVM'], a:0},
+        {q:'What is an algorithm?', o:['A step-by-step procedure','A programming language','A computer brand','A data type'], a:0},
+        {q:'Which is NOT a programming paradigm?', o:['Object-Oriented','Functional','Procedural','Biological'], a:3},
+        {q:'What does API stand for?', o:['Application Programming Interface','Advanced Programming Input','Automated Program Integration','Application Process Interface'], a:0},
+        {q:'What is a database?', o:['Organized collection of data','A programming language','An operating system','A web browser'], a:0},
+        {q:'What is debugging?', o:['Finding and fixing errors','Writing new code','Deleting files','Installing software'], a:0}
+      ]},
+      'mathematics': { title:'Mathematics Quiz', subtitle:'Algebra and calculus', qs:[
+        {q:'d/dx x^2 ?', o:['x','2x','x^2','2x^2'], a:1},
+        {q:'pi (2 dp)?', o:['3.12','3.14','3.16','3.18'], a:1},
+        {q:'Area of circle?', o:['πr','πr^2','2πr','2πr^2'], a:1},
+        {q:'sqrt(144)?', o:['10','12','14','16'], a:1},
+        {q:'Angles in triangle?', o:['90°','180°','270°','360°'], a:1},
+        {q:'What is 2^3?', o:['4','6','8','10'], a:2},
+        {q:'Solve: 3x + 5 = 20', o:['3','5','7','15'], a:1},
+        {q:'What is the slope of y = 2x + 3?', o:['2','3','5','6'], a:0},
+        {q:'What is 15% of 200?', o:['20','25','30','35'], a:2},
+        {q:'What is the square root of 81?', o:['7','8','9','10'], a:2}
+      ]},
+      'physics': { title:'Physics Quiz', subtitle:'Mechanics and basics', qs:[
+        {q:'Law of inertia is Newton\'s?', o:['I','II','III','IV'], a:0},
+        {q:'SI unit of force?', o:['Joule','Newton','Watt','Pascal'], a:1},
+        {q:'Kinetic energy?', o:['mgh','1/2 mv^2','Fd','Pt'], a:1},
+        {q:'Speed of light (km/s)?', o:['299,792','300,000','299,792 m/s','300,000 m/s'], a:0},
+        {q:'Energy conservation says?', o:['Not created/destroyed','Created only','Destroyed only','Both'], a:0},
+        {q:'What is acceleration?', o:['Rate of change of velocity','Rate of change of distance','Rate of change of time','Rate of change of mass'], a:0},
+        {q:'What is the SI unit of power?', o:['Joule','Newton','Watt','Pascal'], a:2},
+        {q:'What is momentum?', o:['Mass × Velocity','Mass × Acceleration','Force × Distance','Force × Time'], a:0},
+        {q:'What is the law of gravity?', o:['F = G(m1×m2)/r²','F = ma','F = kx','F = μN'], a:0},
+        {q:'What is work done?', o:['Force × Distance','Mass × Velocity','Power × Time','Energy × Mass'], a:0}
+      ]},
+      'chemistry': { title:'Chemistry Quiz', subtitle:'General chemistry', qs:[
+        {q:'Gold symbol?', o:['Ag','Au','Fe','Cu'], a:1},
+        {q:'Neutral pH?', o:['0','7','14','10'], a:1},
+        {q:'Water formula?', o:['H2O','CO2','O2','N2'], a:0},
+        {q:'Sharing electrons bond?', o:['Ionic','Covalent','Metallic','Hydrogen'], a:1},
+        {q:'Carbon atomic number?', o:['4','6','8','12'], a:1},
+        {q:'What is the symbol for Iron?', o:['Fe','Ir','In','Fi'], a:0},
+        {q:'What is the most abundant element in the universe?', o:['Carbon','Oxygen','Hydrogen','Helium'], a:2},
+        {q:'What type of reaction is burning?', o:['Oxidation','Reduction','Neutralization','Decomposition'], a:0},
+        {q:'What is the chemical symbol for Sodium?', o:['So','Sa','Na','Sd'], a:2},
+        {q:'What is the formula for table salt?', o:['NaCl','H2O','CO2','CaCO3'], a:0}
+      ]},
+      'biology': { title:'Biology Quiz', subtitle:'Life sciences', qs:[
+        {q:'What is DNA?', o:['Deoxyribonucleic acid','Ribonucleic acid','Protein','Carbohydrate'], a:0},
+        {q:'Mitochondria function?', o:['Energy production','Protein synthesis','Waste removal','Cell division'], a:0},
+        {q:'Human heart chambers?', o:['2','3','4','5'], a:2},
+        {q:'Photosynthesis produces?', o:['Oxygen','Carbon dioxide','Nitrogen','Hydrogen'], a:0},
+        {q:'Cell wall in plants?', o:['Cellulose','Protein','Lipid','Nucleic acid'], a:0},
+        {q:'What is the powerhouse of the cell?', o:['Nucleus','Mitochondria','Ribosome','Golgi apparatus'], a:1},
+        {q:'What is the study of fossils called?', o:['Paleontology','Archaeology','Geology','Anthropology'], a:0},
+        {q:'What is the largest organ in the human body?', o:['Heart','Brain','Liver','Skin'], a:3},
+        {q:'What is the process of cell division called?', o:['Mitosis','Photosynthesis','Respiration','Digestion'], a:0},
+        {q:'What is the main function of red blood cells?', o:['Fight infection','Carry oxygen','Produce antibodies','Store energy'], a:1}
+      ]},
+      'history': { title:'History Quiz', subtitle:'World history', qs:[
+        {q:'World War II ended?', o:['1943','1944','1945','1946'], a:2},
+        {q:'First US President?', o:['John Adams','Thomas Jefferson','George Washington','Benjamin Franklin'], a:2},
+        {q:'Ancient Rome fell?', o:['376 AD','476 AD','576 AD','676 AD'], a:1},
+        {q:'Columbus discovered America?', o:['1490','1491','1492','1493'], a:2},
+        {q:'French Revolution?', o:['1789','1799','1809','1819'], a:0},
+        {q:'When did World War I begin?', o:['1914','1915','1916','1917'], a:0},
+        {q:'Who was the first Emperor of Rome?', o:['Julius Caesar','Augustus','Nero','Caligula'], a:1},
+        {q:'When did the Berlin Wall fall?', o:['1987','1989','1991','1993'], a:1},
+        {q:'Who was the first female Prime Minister of Britain?', o:['Queen Elizabeth','Margaret Thatcher','Indira Gandhi','Golda Meir'], a:1},
+        {q:'When did India gain independence from Britain?', o:['1945','1947','1949','1951'], a:1}
+      ]},
+      'literature': { title:'Literature Quiz', subtitle:'Classic and modern literature', qs:[
+        {q:'Who wrote "Romeo and Juliet"?', o:['Charles Dickens','William Shakespeare','Jane Austen','Mark Twain'], a:1},
+        {q:'What is a sonnet?', o:['A 14-line poem','A short story','A novel','A play'], a:0},
+        {q:'Who wrote "Pride and Prejudice"?', o:['Emily Bronte','Charlotte Bronte','Jane Austen','Mary Shelley'], a:2},
+        {q:'What is the main character called?', o:['Antagonist','Protagonist','Narrator','Author'], a:1},
+        {q:'What is a metaphor?', o:['Direct comparison','Indirect comparison','Rhyming words','Story ending'], a:0},
+        {q:'Who wrote "1984"?', o:['George Orwell','Aldous Huxley','Ray Bradbury','H.G. Wells'], a:0},
+        {q:'What is alliteration?', o:['Repetition of sounds','Repetition of words','Story structure','Character development'], a:0},
+        {q:'Who wrote "The Great Gatsby"?', o:['Ernest Hemingway','F. Scott Fitzgerald','John Steinbeck','William Faulkner'], a:1},
+        {q:'What is a haiku?', o:['A 3-line poem','A 4-line poem','A 5-line poem','A 6-line poem'], a:0},
+        {q:'Who wrote "To Kill a Mockingbird"?', o:['Harper Lee','Truman Capote','Carson McCullers','Flannery O\'Connor'], a:0}
+      ]},
+      'geography': { title:'Geography Quiz', subtitle:'World geography and cultures', qs:[
+        {q:'What is the capital of Japan?', o:['Beijing','Seoul','Tokyo','Bangkok'], a:2},
+        {q:'Which is the largest continent?', o:['North America','South America','Europe','Asia'], a:3},
+        {q:'What is the longest river in the world?', o:['Amazon','Nile','Yangtze','Mississippi'], a:1},
+        {q:'Which country has the most people?', o:['India','China','USA','Indonesia'], a:1},
+        {q:'What is the capital of Australia?', o:['Sydney','Melbourne','Canberra','Brisbane'], a:2},
+        {q:'What is the largest ocean?', o:['Atlantic','Indian','Arctic','Pacific'], a:3},
+        {q:'Which mountain range is in South America?', o:['Rocky Mountains','Alps','Himalayas','Andes'], a:3},
+        {q:'What is the capital of Brazil?', o:['Rio de Janeiro','Sao Paulo','Brasilia','Salvador'], a:2},
+        {q:'Which desert is in Africa?', o:['Gobi','Sahara','Arabian','Kalahari'], a:1},
+        {q:'What is the capital of Canada?', o:['Toronto','Montreal','Vancouver','Ottawa'], a:3}
+      ]}
+    };
+
+    let selectedCourse=null, selectedSet='set-1';
+    let data=[], answers=[], idx=0, timer=null, start=0;
+
+    document.addEventListener('DOMContentLoaded', init);
+    async function init(){
+      console.log('=== Quiz page initializing ===');
+      
+      // Add event listeners for the HTML course elements
+      document.querySelectorAll('.course').forEach(card => {
+        card.addEventListener('click', () => selectCourse(card));
+        card.querySelectorAll('[data-set]').forEach(btn => {
+          btn.addEventListener('click', e => { 
+            e.stopPropagation(); 
+            selectCourse(card, btn.getAttribute('data-set')); 
+          });
+        });
+      });
+      
+      // Add event listeners
+      document.getElementById('begin').addEventListener('click', startQuiz);
+      document.getElementById('prev').addEventListener('click', prevQ);
+      document.getElementById('next').addEventListener('click', nextQ);
+      document.getElementById('retake').addEventListener('click', () => { location.reload(); });
+      
+      console.log('Quiz page initialized successfully');
+      console.log('Available courses:', document.querySelectorAll('.course').length);
+      console.log('Begin button:', document.getElementById('begin'));
+    }
+    
+
+
+
+
+    function selectCourse(card, set){
+      document.querySelectorAll('.course').forEach(c=>c.classList.remove('sel'));
+      card.classList.add('sel');
+      selectedCourse = card.dataset.course;
+      if(set) selectedSet=set; else selectedSet = selectedSet || 'set-1';
+      card.querySelectorAll('.setbtn').forEach(b=>b.classList.toggle('active', b.getAttribute('data-set')===selectedSet));
+      document.getElementById('begin').disabled = false;
+      
+      // Update the welcome text to show selected course
+      const courseTitle = card.querySelector('div[style*="font-weight:700"]').textContent;
+      document.getElementById('userName').textContent = `Selected: ${courseTitle}`;
+      document.querySelector('.welcome-text p').textContent = `Quiz Set: ${selectedSet.replace('set-', 'Set ')}`;
+      
+      console.log(`Course selected: ${selectedCourse}, Set: ${selectedSet}`);
+    }
+
+    function pickSetQuestions(arr){
+      const take = 10; // 10 per set
+      if(selectedSet==='set-2'){ return [...arr].sort(()=>Math.random()-0.5).slice(0, Math.min(take, arr.length)); }
+      if(selectedSet==='set-3'){ return [...arr].reverse().slice(0, Math.min(take, arr.length)); }
+      return arr.slice(0, Math.min(take, arr.length));
+    }
+
+    function startQuiz(){
+      if (!selectedCourse) {
+        alert('Please select a course first');
+        return;
+      }
+      
+      const course = bank[selectedCourse];
+      if (!course || !course.qs || course.qs.length === 0) {
+        alert('No quiz data available for this subject. Please try another subject.');
+        return;
+      }
+      
+      console.log(`Starting quiz: ${course.title} - ${selectedSet}`);
+      
+      // Show loading state
+      const beginBtn = document.getElementById('begin');
+      beginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting Quiz...';
+      beginBtn.disabled = true;
+      
+      setTimeout(() => {
+      data = pickSetQuestions(course.qs);
+      answers = new Array(data.length).fill(null);
+      idx = 0; 
+      start = Date.now();
+      document.querySelector('#select').style.display='none';
+      document.querySelector('#quiz').style.display='block';
+      document.getElementById('chipSet').textContent = selectedSet.replace('set-','Set ');
+      renderQ(); 
+      startTimer();
+      }, 500);
+    }
+
+    function renderQ(){
+      document.getElementById('qNo').textContent = `Question ${idx+1}`;
+      document.getElementById('qText').textContent = data[idx].q;
+      const opts=document.getElementById('opts'); opts.innerHTML='';
+      data[idx].o.forEach((t,i)=>{
+        const d=document.createElement('div'); d.className='opt'; if(answers[idx]===i) d.classList.add('sel');
+        d.innerHTML=`<div class="ol">${String.fromCharCode(65+i)}</div><div>${t}</div>`;
+        d.addEventListener('click',()=>{ 
+          answers[idx]=i; 
+          showAnswerFeedback(i, data[idx].a);
+          setTimeout(() => renderQ(), 1000);
+        });
+        opts.appendChild(d);
+      });
+      document.getElementById('prev').disabled = idx===0;
+      document.getElementById('next').textContent = (idx===data.length-1)?'Finish':'Next';
+      const pct = Math.round(((idx+1)/data.length)*100); document.getElementById('mini').style.width=pct+'%';
+      renderGrid();
+    }
+
+    function renderGrid(){
+      const g=document.getElementById('qgrid'); g.innerHTML='';
+      for(let i=0;i<data.length;i++){
+        const b=document.createElement('div'); b.className='qi'; b.textContent=i+1; if(i===idx)b.classList.add('cur'); if(answers[i]!=null)b.classList.add('ans');
+        b.addEventListener('click',()=>{ idx=i; renderQ(); resetTimer(); startTimer(); });
+        g.appendChild(b);
+      }
+    }
+
+    function nextQ(){ if(idx<data.length-1){ idx++; renderQ(); resetTimer(); startTimer(); } else { showResult(); } }
+    function prevQ(){ if(idx>0){ idx--; renderQ(); resetTimer(); startTimer(); } }
+
+    function showResult(){
+      resetTimer();
+      const correct = answers.reduce((n,a,i)=>n + (a===data[i].a?1:0), 0);
+      const score = Math.round((correct/data.length)*100);
+      const timeSpent = Math.round((Date.now() - start) / 1000);
+      const avgTime = Math.round(timeSpent / data.length);
+      
+      document.getElementById('score').textContent = score+'%';
+      document.getElementById('grade').textContent = score>=90?'Excellent!':score>=80?'Great Job!':score>=70?'Good Work!':score>=60?'Not Bad!':'Keep Practicing!';
+      document.getElementById('summary').textContent = `You scored ${correct} of ${data.length}`;
+      document.getElementById('timeSpent').textContent = timeSpent + 's';
+      document.getElementById('avgTime').textContent = avgTime + 's';
+      document.querySelector('#quiz').style.display='none';
+      document.querySelector('#result').style.display='block';
+
+      // Save quiz result to database
+      saveQuizResultToDatabase(score, correct, data.length, timeSpent);
+    }
+
+    function saveQuizResultToDatabase(score, correctAnswers, totalQuestions, timeSpent) {
+      try {
+        console.log('Quiz completed!');
+        console.log(`Score: ${score}%`);
+        console.log(`Correct: ${correctAnswers}/${totalQuestions}`);
+        console.log(`Time: ${timeSpent}s`);
+        
+        // Save quiz result to localStorage
+        saveQuizResultToLocalStorage(score, correctAnswers, totalQuestions, timeSpent);
+        
+        // Show success message
+        const resultDiv = document.querySelector('#result');
+        const successMsg = document.createElement('div');
+        successMsg.style.cssText = 'background: #10b981; color: white; padding: 8px 12px; border-radius: 6px; margin-top: 12px; font-size: 0.875rem;';
+        successMsg.textContent = '✓ Quiz completed successfully!';
+        resultDiv.appendChild(successMsg);
+        
+        // Show answers review
+        showAnswersReview(resultDiv);
+        
+      } catch (error) {
+        console.error('Error showing quiz result:', error);
+      }
+    }
+
+    function saveQuizResultToLocalStorage(score, correctAnswers, totalQuestions, timeSpent) {
+      try {
+        // Get existing quiz results or create new array
+        const existingResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+        
+        // Create new quiz result object
+        const quizResult = {
+          id: Date.now().toString(),
+          courseId: selectedCourse,
+          courseName: bank[selectedCourse]?.title || 'Unknown Course',
+          quizSet: selectedSet,
+          score: score,
+          correctAnswers: correctAnswers,
+          totalQuestions: totalQuestions,
+          timeSpent: timeSpent,
+          completedAt: new Date().toISOString(),
+          questions: data,
+          answers: answers
+        };
+        
+        // Add new result to beginning of array (most recent first)
+        existingResults.unshift(quizResult);
+        
+        // Keep only last 20 results to avoid localStorage getting too large
+        if (existingResults.length > 20) {
+          existingResults.splice(20);
+        }
+        
+        // Save back to localStorage
+        localStorage.setItem('quizResults', JSON.stringify(existingResults));
+        
+        console.log('Quiz result saved to localStorage:', quizResult);
+        
+      } catch (error) {
+        console.error('Error saving quiz result to localStorage:', error);
+      }
+    }
+
+    function showAnswersReview(resultDiv) {
+      // Create answers review section
+      const answersSection = document.createElement('div');
+      answersSection.style.cssText = 'margin-top: 24px; text-align: left;';
+      
+      const answersTitle = document.createElement('h3');
+      answersTitle.style.cssText = 'color: var(--text-primary); font-size: 1.2rem; margin-bottom: 16px; text-align: center;';
+      answersTitle.textContent = 'Quiz Answers Review';
+      answersSection.appendChild(answersTitle);
+      
+      // Create answers container
+      const answersContainer = document.createElement('div');
+      answersContainer.style.cssText = 'max-height: 400px; overflow-y: auto; padding: 16px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-color);';
+      
+      // Loop through all questions and answers
+      data.forEach((question, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.style.cssText = 'margin-bottom: 20px; padding: 16px; background: var(--glass-bg); border-radius: 8px; border: 1px solid var(--border-color);';
+        
+        // Question text
+        const questionText = document.createElement('div');
+        questionText.style.cssText = 'font-weight: 600; color: var(--text-primary); margin-bottom: 12px; font-size: 1rem;';
+        questionText.textContent = `Question ${index + 1}: ${question.q}`;
+        questionDiv.appendChild(questionText);
+        
+        // Options
+        const optionsDiv = document.createElement('div');
+        optionsDiv.style.cssText = 'margin-bottom: 12px;';
+        
+        question.o.forEach((option, optIndex) => {
+          const optionDiv = document.createElement('div');
+          optionDiv.style.cssText = 'padding: 8px 12px; margin: 4px 0; border-radius: 6px; font-size: 0.9rem;';
+          
+          let backgroundColor, textColor, borderColor;
+          
+          if (optIndex === question.a) {
+            // Correct answer
+            backgroundColor = '#10b981';
+            textColor = 'white';
+            borderColor = '#10b981';
+            optionDiv.innerHTML = `${String.fromCharCode(65 + optIndex)}. ${option} ✓`;
+          } else if (optIndex === answers[index]) {
+            // User's wrong answer
+            backgroundColor = '#ef4444';
+            textColor = 'white';
+            borderColor = '#ef4444';
+            optionDiv.innerHTML = `${String.fromCharCode(65 + optIndex)}. ${option} ✗`;
+          } else {
+            // Other options
+            backgroundColor = 'transparent';
+            textColor = 'var(--text-secondary)';
+            borderColor = 'var(--border-color)';
+            optionDiv.innerHTML = `${String.fromCharCode(65 + optIndex)}. ${option}`;
+          }
+          
+          optionDiv.style.background = backgroundColor;
+          optionDiv.style.color = textColor;
+          optionDiv.style.border = `1px solid ${borderColor}`;
+          
+          optionsDiv.appendChild(optionDiv);
+        });
+        
+        questionDiv.appendChild(optionsDiv);
+        
+        // Result indicator
+        const resultIndicator = document.createElement('div');
+        resultIndicator.style.cssText = 'font-size: 0.875rem; font-weight: 500;';
+        
+        if (answers[index] === question.a) {
+          resultIndicator.style.color = '#10b981';
+          resultIndicator.innerHTML = '✓ Correct';
+        } else {
+          resultIndicator.style.color = '#ef4444';
+          resultIndicator.innerHTML = `✗ Incorrect (Correct: ${String.fromCharCode(65 + question.a)})`;
+        }
+        
+        questionDiv.appendChild(resultIndicator);
+        answersContainer.appendChild(questionDiv);
+      });
+      
+      answersSection.appendChild(answersContainer);
+      resultDiv.appendChild(answersSection);
+    }
+
+    function showAnswerFeedback(selectedIndex, correctIndex) {
+      const options = document.querySelectorAll('.opt');
+      options.forEach((opt, index) => {
+        if (index === correctIndex) {
+          opt.style.background = '#10b981';
+          opt.style.color = 'white';
+          opt.style.borderColor = '#10b981';
+        } else if (index === selectedIndex && selectedIndex !== correctIndex) {
+          opt.style.background = '#ef4444';
+          opt.style.color = 'white';
+          opt.style.borderColor = '#ef4444';
+        }
+      });
+    }
+
+    function resetTimer(){ if(timer){ clearInterval(timer); timer=null; } }
+    function startTimer(){
+      let t=30; document.getElementById('tmain').textContent=t; document.getElementById('ttop').textContent=t;
+      resetTimer();
+      timer=setInterval(()=>{ t--; document.getElementById('tmain').textContent=t; document.getElementById('ttop').textContent=t; if(t<=0){ nextQ(); } },1000);
+    }
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      // Update theme toggle icons
+      updateThemeIcon(newTheme);
+    }
+    
+    function updateThemeIcon(theme) {
+      const icon = theme === 'dark' ? 'fa-sun' : 'fa-moon';
+      if (themeToggle) {
+        themeToggle.innerHTML = `<i class="fas ${icon}></i>`;
+      }
+    }
+    
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    // Load saved theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Database Test - SmartStudy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Local Database Test</h1>
+        <p>This page tests the local database system for SmartStudy.</p>
+
+        <div class="test-section">
+            <h3>📊 Database Status</h3>
+            <div id="dbStatus">Checking database status...</div>
+            <button onclick="checkDBStatus()">Check Status</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 Authentication Test</h3>
+            <div class="form-group">
+                <label for="testEmail">Email:</label>
+                <input type="email" id="testEmail" placeholder="test@example.com" value="test@example.com">
+            </div>
+            <div class="form-group">
+                <label for="testPassword">Password:</label>
+                <input type="password" id="testPassword" placeholder="password123" value="password123">
+            </div>
+            <button onclick="testRegistration()">Test Registration</button>
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="testLogout()">Test Logout</button>
+            <div id="authStatus">Not authenticated</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📚 Demo Data Test</h3>
+            <button onclick="loadDemoData()">Load Demo Data</button>
+            <button onclick="clearDemoData()">Clear Demo Data</button>
+            <button onclick="exportData()">Export Data</button>
+            <div id="demoStatus">Demo data not loaded</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Database Operations</h3>
+            <button onclick="testAddDocument()">Test Add Document</button>
+            <button onclick="testQuery()">Test Query</button>
+            <button onclick="testUpdate()">Test Update</button>
+            <button onclick="testDelete()">Test Delete</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Log</h3>
+            <div id="log" class="log"></div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <!-- Local Database Services -->
+    <script src="assets/js/local-database.js"></script>
+    <script src="assets/js/demo-data.js"></script>
+
+
+    <script>
+        // Logging function
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            logDiv.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        // Check database status
+        function checkDBStatus() {
+            const statusDiv = document.getElementById('dbStatus');
+            if (typeof localDB !== 'undefined' && localDB.isInitialized) {
+                statusDiv.innerHTML = '<span class="success">✅ Database initialized successfully</span>';
+                log('Database status: Initialized', 'success');
+                
+                // Show collections info
+                const collections = ['users', 'courses', 'enrollments', 'notebooks', 'quizResults', 'courseProgress', 'settings'];
+                let totalDocs = 0;
+                collections.forEach(col => {
+                    const count = localDB.getCollection(col).length;
+                    totalDocs += count;
+                });
+                
+                statusDiv.innerHTML += `<br><br>Collections: ${collections.length}<br>Total Documents: ${totalDocs}`;
+            } else {
+                statusDiv.innerHTML = '<span class="error">❌ Database not initialized</span>';
+                log('Database status: Not initialized', 'error');
+            }
+        }
+
+        // Test registration
+        async function testRegistration() {
+            try {
+                const email = document.getElementById('testEmail').value;
+                const password = document.getElementById('testPassword').value;
+                
+                if (!email || !password) {
+                    alert('Please enter email and password');
+                    return;
+                }
+
+                log(`Testing registration for: ${email}`, 'info');
+                
+                const userData = {
+                    fullName: 'Test User',
+                    provider: 'email',
+                    registrationMethod: 'test'
+                };
+
+                const result = await localAuth.registerUser(email, password, userData);
+                
+                if (result.success) {
+                    log(`Registration successful! User ID: ${result.user.id}`, 'success');
+                    document.getElementById('authStatus').innerHTML = `<span class="success">✅ Registered: ${result.user.email}</span>`;
+                } else {
+                    log(`Registration failed: ${result.error}`, 'error');
+                    document.getElementById('authStatus').innerHTML = `<span class="error">❌ Registration failed: ${result.error}</span>`;
+                }
+            } catch (error) {
+                log(`Registration error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test login
+        async function testLogin() {
+            try {
+                const email = document.getElementById('testEmail').value;
+                const password = document.getElementById('testPassword').value;
+                
+                log(`Testing login for: ${email}`, 'info');
+                
+                const result = await localAuth.loginUser(email, password);
+                
+                if (result.success) {
+                    log(`Login successful! User ID: ${result.user.id}`, 'success');
+                    document.getElementById('authStatus').innerHTML = `<span class="success">✅ Logged in: ${result.user.email}</span>`;
+                } else {
+                    log(`Login failed: ${result.error}`, 'error');
+                    document.getElementById('authStatus').innerHTML = `<span class="error">❌ Login failed: ${result.error}</span>`;
+                }
+            } catch (error) {
+                log(`Login error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test logout
+        function testLogout() {
+            try {
+                const result = localAuth.logout();
+                if (result.success) {
+                    log('Logout successful', 'success');
+                    document.getElementById('authStatus').innerHTML = '<span class="info">ℹ️ Not authenticated</span>';
+                } else {
+                    log(`Logout failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`Logout error: ${error.message}`, 'error');
+            }
+        }
+
+        // Load demo data
+        async function loadDemoData() {
+            try {
+                if (typeof demoDataService !== 'undefined') {
+                    await demoDataService.initializeDemoData();
+                    log('Demo data loaded successfully', 'success');
+                    document.getElementById('demoStatus').innerHTML = '<span class="success">✅ Demo data loaded</span>';
+                    checkDBStatus(); // Refresh status
+                } else {
+                    log('Demo data service not available', 'error');
+                }
+            } catch (error) {
+                log(`Demo data error: ${error.message}`, 'error');
+            }
+        }
+
+        // Clear demo data
+        function clearDemoData() {
+            try {
+                if (typeof localDB !== 'undefined') {
+                    localDB.clearDatabase();
+                    log('Demo data cleared', 'success');
+                    document.getElementById('demoStatus').innerHTML = '<span class="info">ℹ️ Demo data cleared</span>';
+                    checkDBStatus(); // Refresh status
+                }
+            } catch (error) {
+                log(`Clear data error: ${error.message}`, 'error');
+            }
+        }
+
+        // Export data
+        function exportData() {
+            try {
+                if (typeof localDB !== 'undefined') {
+                    const result = localDB.exportDatabase();
+                    if (result.success) {
+                        const dataStr = JSON.stringify(result.data, null, 2);
+                        const blob = new Blob([dataStr], { type: 'application/json' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = `smartstudy_test_${new Date().toISOString().split('T')[0]}.json`;
+                        link.click();
+                        log('Data exported successfully', 'success');
+                    } else {
+                        log(`Export failed: ${result.error}`, 'error');
+                    }
+                }
+            } catch (error) {
+                log(`Export error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test database operations
+        function testAddDocument() {
+            try {
+                const testDoc = {
+                    test: true,
+                    message: 'Test document',
+                    timestamp: new Date().toISOString()
+                };
+                
+                const result = localDB.addDocument('test_collection', testDoc);
+                
+                if (result.success) {
+                    log(`Document added successfully! ID: ${result.id}`, 'success');
+                } else {
+                    log(`Add document failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`Add document error: ${error.message}`, 'error');
+            }
+        }
+
+        function testQuery() {
+            try {
+                const docs = localDB.queryCollection('test_collection', { test: true });
+                log(`Query returned ${docs.length} documents`, 'success');
+                console.log('Query results:', docs);
+            } catch (error) {
+                log(`Query error: ${error.message}`, 'error');
+            }
+        }
+
+        function testUpdate() {
+            try {
+                const docs = localDB.getCollection('test_collection');
+                if (docs.length > 0) {
+                    const doc = docs[0];
+                    const result = localDB.updateDocument('test_collection', doc.id, { updated: true });
+                    
+                    if (result.success) {
+                        log(`Document updated successfully!`, 'success');
+                    } else {
+                        log(`Update failed: ${result.error}`, 'error');
+                    }
+                } else {
+                    log('No documents to update', 'info');
+                }
+            } catch (error) {
+                log(`Update error: ${error.message}`, 'error');
+            }
+        }
+
+        function testDelete() {
+            try {
+                const docs = localDB.getCollection('test_collection');
+                if (docs.length > 0) {
+                    const doc = docs[0];
+                    const result = localDB.deleteDocument('test_collection', doc.id);
+                    
+                    if (result.success) {
+                        log(`Document deleted successfully!`, 'success');
+                    } else {
+                        log(`Delete failed: ${result.error}`, 'error');
+                    }
+                } else {
+                    log('No documents to delete', 'info');
+                }
+            } catch (error) {
+                log(`Delete error: ${error.message}`, 'error');
+            }
+        }
+
+        // Clear log
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Page loaded, checking database status...', 'info');
+            
+            // Wait a moment for services to initialize
+            setTimeout(() => {
+                checkDBStatus();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+

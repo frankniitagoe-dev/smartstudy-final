@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SmartStudy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: var(--space-4);
+            padding-top: var(--space-24);
+        }
+        
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: var(--space-4) 0;
+        }
+        
+
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .auth-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--color-primary);
+            margin-bottom: 0;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .form-group.half {
+            width: calc(50% - var(--space-2));
+            display: inline-block;
+        }
+        
+        .form-group.half:first-child {
+            margin-right: var(--space-4);
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: var(--font-medium);
+            color: var(--color-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: var(--space-4) var(--space-4);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #000;
+            border-radius: var(--radius-lg);
+            color: var(--color-primary);
+            font-size: var(--text-base);
+            transition: all var(--transition-normal);
+        }
+        
+
+        
+        .form-input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+        
+        
+
+        
+        .form-select option {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: var(--space-6);
+        }
+        
+        .form-link {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .form-link:hover {
+            color: var(--color-white);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: var(--space-6) 0;
+            color: var(--color-primary);
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .divider span {
+            margin: 0 var(--space-4);
+            font-size: var(--text-sm);
+        }
+        
+       
+
+        
+
+        
+        .continue-btn {
+            width: 100%;
+            margin-bottom: var(--space-4);
+            padding: var(--space-4) var(--space-6);
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: none;
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+        
+        
+        
+        .continue-btn:active {
+            transform: translateY(0);
+        }
+     
+        
+        
+        .divider {
+            text-align: center;
+            margin: var(--space-4) 0;
+        }
+        
+        .divider span {
+            color: var(--color-primary);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+        }
+        
+        .divider a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+      
+        
+             
+         
+         .form-actions {
+             display: flex;
+             gap: var(--space-4);
+             margin-top: var(--space-4);
+         }
+       
+       
+         
+                  .continue-btn {
+             flex: 2;
+         }
+         
+
+         
+         /* Loading states */
+         .btn.loading {
+             position: relative;
+             color: transparent;
+         }
+         
+         .btn.loading::after {
+             content: '';
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             width: 16px;
+             height: 16px;
+             margin: -8px 0 0 -8px;
+             border: 2px solid transparent;
+             border-top: 2px solid currentColor;
+             border-radius: 50%;
+             animation: spin 1s linear infinite;
+         }
+         
+       
+     </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>SmartStudy</span>
+            </a>
+            <div class=" nav-center">
+
+            </div>
+            <div class="nav-links">
+               
+
+                <a href="login.html" class="nav-link">Login</a>
+
+            </div>
+
+        </div>
+    </nav>
+
+
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Create an account</h1>
+            </div>
+
+            <!-- Step 1: Email Form -->
+            <form id="emailForm" class="auth-form">
+                <div class="form-group">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary continue-btn">
+                    Continue
+                </button>
+            </form>
+
+            <!-- Step 2: Details Form (Hidden initially) -->
+            <form id="detailsForm" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName" 
+                        class="form-input" 
+                        placeholder="Full Name"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Password"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-input" 
+                        placeholder="Confirm Password"
+                        required
+                    >
+                </div>
+                
+              
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary back-btn" onclick="goBackToEmail()">
+                        Back
+                    </button>
+                    <button type="submit" class="btn btn-primary continue-btn">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="divider">
+                <span>Already have an account? <a href="login.html" class="form-link">Log in</a></span>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Local Database Service -->
+    <script src="assets/js/local-database.js"></script>
+    <script src="assets/js/demo-data.js"></script>
+    
+    <script>
+        console.log('Register page script loaded');
+        
+        // Wait for local database to be ready
+        function waitForLocalDB() {
+            return new Promise((resolve, reject) => {
+                const maxAttempts = 50;
+                let attempts = 0;
+                
+                const checkLocalDB = () => {
+                    attempts++;
+                    
+                    if (typeof localDB !== 'undefined' && localDB.isInitialized) {
+                        console.log('✅ Local database is ready');
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        reject(new Error('Local database failed to initialize after 5 seconds'));
+                    } else {
+                        setTimeout(checkLocalDB, 100);
+                    }
+                };
+                
+                checkLocalDB();
+            });
+        }
+        
+        // Check if elements exist
+        const emailFormElement = document.getElementById('emailForm');
+        const detailsFormElement = document.getElementById('detailsForm');
+        const emailInput = document.getElementById('email');
+        
+        console.log('Email form element:', emailFormElement);
+        console.log('Details form element:', detailsFormElement);
+        console.log('Email input element:', emailInput);
+        
+        // Password strength checker (only when details form is visible)
+        function setupPasswordStrengthChecker() {
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    console.log('Password input:', password);
+                    
+                    // Simple password validation
+                    if (password.length < 6) {
+                        this.setCustomValidity('Password must be at least 6 characters');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                });
+            }
+        }
+
+        
+
+
+
+        // Step 1: Email form submission - Show details form
+        const emailForm = document.getElementById('emailForm');
+        console.log('Email form found:', emailForm);
+        
+        if (emailForm) {
+            emailForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Email form submitted - event triggered');
+                
+                const email = document.getElementById('email').value;
+                console.log('Email value:', email);
+                
+                if (!email) {
+                    alert('Please enter your email address');
+                    return;
+                }
+                
+                // Store email for later use
+                localStorage.setItem('pendingEmail', email);
+                console.log('Email stored in localStorage');
+                
+                // Hide email form and show details form
+                const emailFormElement = document.getElementById('emailForm');
+                const detailsFormElement = document.getElementById('detailsForm');
+                
+                console.log('Email form element:', emailFormElement);
+                console.log('Details form element:', detailsFormElement);
+                
+                if (emailFormElement && detailsFormElement) {
+                    emailFormElement.style.display = 'none';
+                    detailsFormElement.style.display = 'block';
+                    console.log('Forms switched successfully');
+                    
+                    // Update the auth title
+                    const authTitle = document.querySelector('.auth-title');
+                    if (authTitle) {
+                        authTitle.textContent = 'Complete your account';
+                        console.log('Title updated');
+                    }
+                    
+                    // Setup password strength checker for the now-visible form
+                    setupPasswordStrengthChecker();
+                } else {
+                    console.error('Could not find form elements');
+                }
+            });
+            
+            console.log('Email form event listener attached');
+        } else {
+            console.error('Email form not found');
+        }
+        
+        // Also add a direct click handler for the continue button as backup
+        const continueBtn = document.querySelector('.continue-btn');
+        console.log('Continue button found:', continueBtn);
+        
+        if (continueBtn) {
+            continueBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Continue button clicked directly');
+                
+                const email = document.getElementById('email').value;
+                console.log('Email from button click:', email);
+                
+                if (!email) {
+                    alert('Please enter your email address');
+                    return;
+                }
+                
+                // Store email for later use
+                localStorage.setItem('pendingEmail', email);
+                console.log('Email stored from button click');
+                
+                // Hide email form and show details form
+                const emailFormEl = document.getElementById('emailForm');
+                const detailsFormEl = document.getElementById('detailsForm');
+                
+                if (emailFormEl && detailsFormEl) {
+                    emailFormEl.style.display = 'none';
+                    detailsFormEl.style.display = 'block';
+                    console.log('Forms switched from button click');
+                    
+                    // Update the auth title
+                    const authTitle = document.querySelector('.auth-title');
+                    if (authTitle) {
+                        authTitle.textContent = 'Complete your account';
+                    }
+                    
+                    // Setup password strength checker
+                    setupPasswordStrengthChecker();
+                }
+            });
+            
+            console.log('Continue button event listener attached');
+        } else {
+            console.error('Continue button not found');
+        }
+
+        // Step 2: Details form submission - Create account
+        document.getElementById('detailsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Details form submitted');
+            
+            const email = localStorage.getItem('pendingEmail');
+                            const fullName = document.getElementById('fullName').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validation
+            if (!email || !fullName || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating Account...';
+            
+            try {
+                // Create user data object with default values
+                const userData = {
+                    email: email,
+                    fullName: fullName,
+                    provider: 'email',
+                    registrationMethod: 'email-first',
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    settings: {
+                        theme: 'light',
+                        notifications: true,
+                        emailUpdates: true,
+                        studyReminders: true
+                    },
+                    progress: {
+                        overallProgress: 0,
+                        weeklyGoal: 10, // hours
+                        monthlyGoal: 40, // hours
+                        currentStreak: 0,
+                        longestStreak: 0
+                    }
+                };
+                
+                console.log('Creating local account with default data:', userData);
+                
+                // Create user account in local database
+                console.log('Creating local user account...');
+                const result = await localAuth.registerUser(email, password, userData);
+                
+                if (result.success) {
+                    console.log('Local user account created successfully:', result.user.id);
+                    
+                    // Store user data for dashboard
+                    const completeUserData = {
+                        uid: result.user.id,
+                        email: email,
+                        fullName: fullName,
+                        provider: 'email',
+                        registrationMethod: 'email-first'
+                    };
+                    
+                    localStorage.setItem('pendingUser', JSON.stringify(completeUserData));
+                    localStorage.removeItem('pendingEmail'); // Clean up
+                    
+                    // Show success message
+                    alert('Account created successfully! Redirecting to dashboard...');
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Account creation failed: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+
+         
+         // Function to go back to email form
+         function goBackToEmail() {
+             document.getElementById('detailsForm').style.display = 'none';
+             document.getElementById('emailForm').style.display = 'block';
+             document.querySelector('.auth-title').textContent = 'Create an account';
+             localStorage.removeItem('pendingEmail');
+         }
+         
+         
+
+         // Theme toggle functionality
+         const themeToggle = document.getElementById('themeToggle');
+         
+         function toggleTheme() {
+             const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+             
+             document.documentElement.setAttribute('data-theme', newTheme);
+             localStorage.setItem('theme', newTheme);
+             
+             // Update theme toggle icons
+             updateThemeIcon(newTheme);
+         }
+         
+         function updateThemeIcon(theme) {
+             const icon = theme === 'dark' ? 'fa-sun' : 'fa-moon';
+             if (themeToggle) {
+                 themeToggle.innerHTML = `<i class="fas ${icon}></i>`;
+             }
+             if (mobileThemeToggle) {
+                 mobileThemeToggle.innerHTML = `<i class="fas ${icon}></i><span>Toggle Theme</span>`;
+             }
+         }
+         
+         if (themeToggle) {
+             themeToggle.addEventListener('click', toggleTheme);
+         }
+         
+         // Mobile theme toggle
+         mobileThemeToggle.addEventListener('click', () => {
+             toggleTheme();
+         });
+         
+         // Load saved theme on page load
+         document.addEventListener('DOMContentLoaded', function() {
+             const savedTheme = localStorage.getItem('theme') || 'dark';
+             document.documentElement.setAttribute('data-theme', savedTheme);
+             updateThemeIcon(savedTheme);
+         });
+
+         
+         
+         // Test local database function
+         window.testLocalDB = async function() {
+             console.log('🧪 Testing local database in register page...');
+             try {
+                 await waitForLocalDB();
+                 console.log('✅ Local database is ready');
+                 console.log('✅ Database available:', typeof localDB);
+                 console.log('✅ Auth available:', typeof localAuth);
+                 
+                 // Test creating a test user document
+                 const testData = {
+                     test: true,
+                     timestamp: new Date().toISOString(),
+                     message: 'Test from register page'
+                 };
+                 
+                 const result = localDB.addDocument('test_users', testData);
+                 
+                 if (result.success) {
+                     console.log('✅ Test document created:', result.id);
+                 } else {
+                     console.error('❌ Test failed:', result.error);
+                 }
+                 
+             } catch (error) {
+                 console.error('❌ Test failed:', error);
+             }
+         };
+         
+         console.log('🔧 testLocalDB() function is now available in console');
+     </script>
+</body>
+</html>

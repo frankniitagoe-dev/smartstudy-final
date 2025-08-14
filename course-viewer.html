@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy - Course Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="course-viewer-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h3>SmartStudy</h3>
+                    <p>Student Learning Hub</p>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Learning Hub</div>
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="courses.html" class="menu-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>Browse Courses</span>
+                </a>
+                <!-- Upload moved into notebook main content -->
+                <a href="quiz.html" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Take Quiz</span>
+                </a>
+                        </div>
+
+            <div class="menu-section">
+                <div class="menu-title">My Learning</div>
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Recent Activity</span>
+                </a>
+                <!-- Upload moved into notebook main content -->
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </a>
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    <span>Notebook</span>
+                </a>
+                    </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Account</div>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="index.html" class="menu-item" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="course-info">
+                    <div class="course-icon">
+                        <i class="fas fa-calculator" id="courseIcon"></i>
+                </div>
+                    <div class="course-details">
+                        <h2 id="courseTitle">Advanced Calculus</h2>
+                        <p id="courseSubtitle">Master differential equations and mathematical analysis</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="notebook-btn" id="notebookBtn">
+                        <i class="fas fa-book"></i>
+                        <span>Notebook</span>
+                    </button>
+
+                </div>
+            </header>
+
+            <!-- Course Content -->
+            <div class="course-content">
+                <!-- Course Navigation -->
+                <nav class="course-nav">
+                    <div class="nav-section">
+                        <div class="nav-section-title">Course Content</div>
+                        <div class="topic-group">
+                            <div class="topic-group-title">
+                                <i class="fas fa-calculator"></i>
+                                <span>Module 1: Fundamentals</span>
+                            </div>
+                            <ul class="topic-list" id="module1Topics">
+                                <!-- Topics will be loaded dynamically -->
+                            </ul>
+                        </div>
+                        <div class="topic-group">
+                            <div class="topic-group-title">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Module 2: Advanced Concepts</span>
+                            </div>
+                            <ul class="topic-list" id="module2Topics">
+                                <!-- Topics will be loaded dynamically -->
+                            </ul>
+                        </div>
+                        <div class="topic-group">
+                            <div class="topic-group-title">
+                                <i class="fas fa-flask"></i>
+                                <span>Module 3: Applications</span>
+                            </div>
+                            <ul class="topic-list" id="module3Topics">
+                                <!-- Topics will be loaded dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                    <div class="content-header">
+                        <h1 class="content-title" id="contentTitle">Introduction to Calculus</h1>
+                        <p class="content-subtitle" id="contentSubtitle">Understanding the basics of differential calculus</p>
+                        <div class="content-meta">
+                            <span><i class="fas fa-clock"></i> 15 min read</span>
+                            <span><i class="fas fa-user"></i> Dr. Sarah Johnson</span>
+                            <span><i class="fas fa-calendar"></i> Updated 2 days ago</span>
+                        </div>
+                    </div>
+
+                    <div class="content-body" id="contentBody">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
+
+                    <div class="content-actions">
+                        <div class="nav-buttons">
+                            <button class="nav-btn" id="prevBtn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                                Previous
+                            </button>
+                            <button class="nav-btn" id="nextBtn">
+                                Next
+                                <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="quiz-actions">
+                        <a href="quiz.html" class="btn btn-primary"><i class="fas fa-question-circle"></i> Quiz</a>
+                    </div>
+                        <div class="progress-indicator">
+                            <span id="progressText">1 of 12 topics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notebook Modal -->
+    <div class="notebook-modal" id="notebookModal">
+        <div class="notebook-content">
+            <div class="notebook-header">
+                <h2 class="notebook-title">My Notebook</h2>
+                <button class="close-btn" id="closeNotebookBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="notebook-entries" id="notebookEntries">
+                <!-- Notebook entries will be loaded here -->
+            </div>
+            <div class="notebook-actions">
+                <button class="nav-btn" id="clearNotebookBtn">
+                    <i class="fas fa-trash"></i>
+                    Clear All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Local Database Services -->
+    <script src="assets/js/local-database.js"></script>
+    <script src="assets/js/demo-data.js"></script>
+
+    <script src="assets/js/script.js"></script>
+    
+    <script src="assets/js/migration.js"></script>
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const pendingUser = localStorage.getItem('pendingUser');
+            const userData = localStorage.getItem('userData');
+            
+            let user = null;
+            
+            if (pendingUser) {
+                try {
+                    user = JSON.parse(pendingUser);
+                } catch (error) {
+                    console.error('Error parsing pendingUser:', error);
+                }
+            } else if (userData) {
+                try {
+                    user = JSON.parse(userData);
+                } catch (error) {
+                    console.error('Error parsing userData:', error);
+                }
+            }
+            
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+        });
+
+
+
+        // Course data structure
+        let courseData = {
+            title: "Advanced Calculus",
+            subtitle: "Master differential equations and mathematical analysis",
+            icon: "calculator",
+            modules: [
+                {
+                    id: 1,
+                    title: "Module 1: Fundamentals",
+                    icon: "calculator",
+                    topics: [
+                        {
+                            id: 1,
+                            title: "Introduction to Calculus",
+                            subtitle: "Understanding the basics of differential calculus",
+                            completed: true,
+                            content: `
+                                <h2>What is Calculus?</h2>
+                                <p>Calculus is a branch of mathematics that deals with continuous change. It has two main branches: differential calculus and integral calculus.</p>
+                                
+                                <h3>Key Concepts</h3>
+                                <ul>
+                                    <li><span class="highlightable">Limits</span> - The foundation of calculus</li>
+                                    <li><span class="highlightable">Derivatives</span> - Rates of change</li>
+                                    <li><span class="highlightable">Integrals</span> - Accumulation of change</li>
+                                </ul>
+                                
+                                <h2>Historical Background</h2>
+                                <p>Calculus was developed independently by <span class="highlightable">Isaac Newton</span> and <span class="highlightable">Gottfried Leibniz</span> in the late 17th century. Newton developed calculus to solve problems in physics, particularly motion and gravity.</p>
+                                
+                                <h3>Applications</h3>
+                                <p>Calculus is used in:</p>
+                                <ul>
+                                    <li>Physics - motion, forces, energy</li>
+                                    <li>Engineering - optimization, design</li>
+                                    <li>Economics - marginal analysis</li>
+                                    <li>Biology - population growth</li>
+                                </ul>
+                            `
+                        },
+                        {
+                            id: 2,
+                            title: "Limits and Continuity",
+                            subtitle: "Exploring the concept of limits and continuous functions",
+                            completed: false,
+                            content: `
+                                <h2>Understanding Limits</h2>
+                                <p>A limit describes the value that a function approaches as the input approaches some value.</p>
+                                
+                                <h3>Definition</h3>
+                                <p>For a function f(x), we say that <span class="highlightable">lim(x→a) f(x) = L</span> if we can make f(x) as close to L as we want by taking x sufficiently close to a.</p>
+                                
+                                <h2>Types of Limits</h2>
+                                <ul>
+                                    <li><span class="highlightable">One-sided limits</span> - approaching from left or right</li>
+                                    <li><span class="highlightable">Infinite limits</span> - function grows without bound</li>
+                                    <li><span class="highlightable">Limits at infinity</span> - behavior as x approaches ±∞</li>
+                                </ul>
+                                
+                                <h3>Continuity</h3>
+                                <p>A function is continuous at a point if:</p>
+                                <ol>
+                                    <li>The function is defined at that point</li>
+                                    <li>The limit exists at that point</li>
+                                    <li>The limit equals the function value</li>
+                                </ol>
+                            `
+                        },
+                        {
+                            id: 3,
+                            title: "Derivatives",
+                            subtitle: "Learning about rates of change and differentiation",
+                            completed: false,
+                            content: `
+                                <h2>The Derivative</h2>
+                                <p>The derivative of a function measures how the function changes as its input changes.</p>
+                                
+                                <h3>Definition</h3>
+                                <p>The derivative of f(x) at x = a is:</p>
+                                <p><span class="highlightable">f'(a) = lim(h→0) [f(a+h) - f(a)]/h</span></p>
+                                
+                                <h2>Basic Rules</h2>
+                                <ul>
+                                    <li><span class="highlightable">Power Rule</span>: d/dx[x^n] = nx^(n-1)</li>
+                                    <li><span class="highlightable">Constant Rule</span>: d/dx[c] = 0</li>
+                                    <li><span class="highlightable">Sum Rule</span>: d/dx[f(x) + g(x)] = f'(x) + g'(x)</li>
+                                    <li><span class="highlightable">Product Rule</span>: d/dx[f(x)g(x)] = f'(x)g(x) + f(x)g'(x)</li>
+                                </ul>
+                                
+                                <h3>Applications</h3>
+                                <p>Derivatives are used to find:</p>
+                                <ul>
+                                    <li>Instantaneous rates of change</li>
+                                    <li>Slopes of tangent lines</li>
+                                    <li>Maximum and minimum values</li>
+                                    <li>Velocity and acceleration</li>
+                                </ul>
+                            `
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Module 2: Advanced Concepts",
+                    icon: "chart-line",
+                    topics: [
+                        {
+                            id: 4,
+                            title: "Chain Rule",
+                            subtitle: "Differentiating composite functions",
+                            completed: false,
+                            content: `
+                                <h2>The Chain Rule</h2>
+                                <p>The chain rule is used to differentiate composite functions.</p>
+                                
+                                <h3>Formula</h3>
+                                <p>If y = f(g(x)), then: <span class="highlightable">dy/dx = f'(g(x)) × g'(x)</span></p>
+                                
+                                <h2>Examples</h2>
+                                <p>For y = sin(x²):</p>
+                                <ul>
+                                    <li>Let u = x²</li>
+                                    <li>Then y = sin(u)</li>
+                                    <li>dy/dx = cos(u) × 2x = 2x cos(x²)</li>
+                                </ul>
+                            `
+                        },
+                        {
+                            id: 5,
+                            title: "Implicit Differentiation",
+                            subtitle: "Differentiating equations that define y implicitly",
+                            completed: false,
+                            content: `
+                                <h2>Implicit Functions</h2>
+                                <p>When y is not explicitly solved for x, we use implicit differentiation.</p>
+                                
+                                <h3>Method</h3>
+                                <ol>
+                                    <li>Differentiate both sides with respect to x</li>
+                                    <li>Treat y as a function of x</li>
+                                    <li>Solve for dy/dx</li>
+                                </ol>
+                                
+                                <h2>Example</h2>
+                                <p>For x² + y² = 25:</p>
+                                <ul>
+                                    <li>2x + 2y(dy/dx) = 0</li>
+                                    <li>dy/dx = -x/y</li>
+                                </ul>
+                            `
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Module 3: Applications",
+                    icon: "flask",
+                    topics: [
+                        {
+                            id: 6,
+                            title: "Optimization",
+                            subtitle: "Finding maximum and minimum values",
+                            completed: false,
+                            content: `
+                                <h2>Optimization Problems</h2>
+                                <p>Optimization involves finding the maximum or minimum values of functions.</p>
+                                
+                                <h3>Steps</h3>
+                                <ol>
+                                    <li>Identify the objective function</li>
+                                    <li>Find critical points (f'(x) = 0 or undefined)</li>
+                                    <li>Use the second derivative test or evaluate endpoints</li>
+                                </ol>
+                                
+                                <h2>Applications</h2>
+                                <ul>
+                                    <li>Maximizing profit</li>
+                                    <li>Minimizing cost</li>
+                                    <li>Finding optimal dimensions</li>
+                                    <li>Maximizing efficiency</li>
+                                </ul>
+                            `
+                        }
+                    ]
+                }
+            ]
+        };
+
+        let currentTopicIndex = 0;
+        let currentModuleIndex = 0;
+        let notebookEntries = [];
+
+        // Initialize the course
+        function initializeCourse() {
+            // Load selected course from localStorage if available
+            const selectedCourse = localStorage.getItem('selectedCourse');
+            if (selectedCourse) {
+                try {
+                    const course = JSON.parse(selectedCourse);
+                    // Update course data based on selected course
+                    courseData.title = course.title;
+                    courseData.subtitle = course.description;
+                    courseData.icon = getSubjectIcon(course.subject);
+                } catch (error) {
+                    console.error('Error parsing selected course:', error);
+                }
+            }
+            
+            updateCourseInfo();
+            loadTopics();
+            loadContent();
+            updateProgress();
+        }
+
+        // Get subject icon
+        function getSubjectIcon(subject) {
+            const icons = {
+                'mathematics': 'calculator',
+                'physics': 'atom',
+                'chemistry': 'flask',
+                'biology': 'dna',
+                'computer-science': 'laptop-code',
+                'literature': 'book-open',
+                'history': 'landmark'
+            };
+            return icons[subject] || 'graduation-cap';
+        }
+
+        // Update course information
+        function updateCourseInfo() {
+            document.getElementById('courseTitle').textContent = courseData.title;
+            document.getElementById('courseSubtitle').textContent = courseData.subtitle;
+            document.getElementById('courseIcon').className = `fas fa-${courseData.icon}`;
+        }
+
+        // Load topics for all modules
+        function loadTopics() {
+            courseData.modules.forEach((module, moduleIndex) => {
+                const topicList = document.getElementById(`module${module.id}Topics`);
+                topicList.innerHTML = '';
+                
+                module.topics.forEach((topic, topicIndex) => {
+                    const li = document.createElement('li');
+                    li.className = 'topic-item';
+                    
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.className = 'topic-link';
+                    if (topic.completed) link.classList.add('completed');
+                    if (moduleIndex === currentModuleIndex && topicIndex === currentTopicIndex) {
+                        link.classList.add('active');
+                    }
+                    
+                    link.innerHTML = `
+                        <i class="fas fa-play"></i>
+                        <span>${topic.title}</span>
+                    `;
+                    
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        navigateToTopic(moduleIndex, topicIndex);
+                    });
+                    
+                    li.appendChild(link);
+                    topicList.appendChild(li);
+                });
+            });
+        }
+
+        // Load content for current topic
+        function loadContent() {
+            const currentTopic = courseData.modules[currentModuleIndex].topics[currentTopicIndex];
+            
+            document.getElementById('contentTitle').textContent = currentTopic.title;
+            document.getElementById('contentSubtitle').textContent = currentTopic.subtitle;
+            document.getElementById('contentBody').innerHTML = currentTopic.content;
+            
+            // Add highlight functionality to content
+            addHighlightFunctionality();
+        }
+
+        // Add highlight functionality to content
+        function addHighlightFunctionality() {
+            const highlightables = document.querySelectorAll('.highlightable');
+            
+            highlightables.forEach(element => {
+                element.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    
+                    if (this.classList.contains('selected')) {
+                        const btn = document.createElement('button');
+                        btn.className = 'highlight-btn';
+                        btn.innerHTML = '<i class="fas fa-plus"></i>';
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            addToNotebook(this.textContent, this.textContent);
+                            this.classList.remove('selected');
+                            btn.remove();
+                        });
+                        this.appendChild(btn);
+                    } else {
+                        const btn = this.querySelector('.highlight-btn');
+                        if (btn) btn.remove();
+                    }
+                });
+            });
+        }
+
+        // Navigate to a specific topic
+        function navigateToTopic(moduleIndex, topicIndex) {
+            currentModuleIndex = moduleIndex;
+            currentTopicIndex = topicIndex;
+            
+            loadTopics();
+            loadContent();
+            updateProgress();
+        }
+
+        // Update progress
+        async function updateProgress() {
+            const totalTopics = courseData.modules.reduce((total, module) => total + module.topics.length, 0);
+            const currentTopicNumber = courseData.modules.slice(0, currentModuleIndex).reduce((total, module) => total + module.topics.length, 0) + currentTopicIndex + 1;
+            
+            document.getElementById('progressText').textContent = `${currentTopicNumber} of ${totalTopics} topics`;
+            
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentModuleIndex === 0 && currentTopicIndex === 0;
+            nextBtn.disabled = currentModuleIndex === courseData.modules.length - 1 && currentTopicIndex === courseData.modules[currentModuleIndex].topics.length - 1;
+
+            // Persist per-topic completion
+            try {
+                const topicId = `${courseData.modules[currentModuleIndex].id}:${courseData.modules[currentModuleIndex].topics[currentTopicIndex].id}`;
+                await window.DatabaseService.saveCourseProgress(courseData.title, {
+                    topicProgress: { [topicId]: true },
+                    lastVisitedTopic: topicId,
+                    lastVisitedAt: new Date().toISOString()
+                });
+            } catch (e) { console.warn('Progress save failed', e); }
+        }
+
+        // Navigation buttons
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                currentTopicIndex--;
+            } else if (currentModuleIndex > 0) {
+                currentModuleIndex--;
+                currentTopicIndex = courseData.modules[currentModuleIndex].topics.length - 1;
+            }
+            navigateToTopic(currentModuleIndex, currentTopicIndex);
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentTopicIndex < courseData.modules[currentModuleIndex].topics.length - 1) {
+                currentTopicIndex++;
+            } else if (currentModuleIndex < courseData.modules.length - 1) {
+                currentModuleIndex++;
+                currentTopicIndex = 0;
+            }
+            navigateToTopic(currentModuleIndex, currentTopicIndex);
+        });
+
+        // Notebook functionality
+        async function addToNotebook(title, content) {
+            try {
+                const entry = {
+                    title: title,
+                    content: content,
+                    date: new Date().toLocaleDateString(),
+                    course: courseData.title
+                };
+                
+                const result = await DatabaseService.addNotebookEntry(entry);
+                if (result.success) {
+                    notebookEntries.push({ id: result.id, ...entry });
+                    
+                    // Show success message
+                    const notification = document.createElement('div');
+                    notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #10b981;
+                        color: white;
+                        padding: 1rem;
+                        border-radius: 8px;
+                        z-index: 3000;
+                        animation: slideIn 0.3s ease;
+                    `;
+                    notification.textContent = 'Added to notebook!';
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                } else {
+                    alert('Error adding to notebook. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error adding to notebook:', error);
+                alert('Error adding to notebook. Please try again.');
+            }
+        }
+
+        // Load notebook entries
+        async function loadNotebookEntries() {
+            try {
+                const result = await DatabaseService.getNotebookEntries();
+                if (result.success) {
+                    notebookEntries = result.data;
+                }
+                
+                const entriesContainer = document.getElementById('notebookEntries');
+                entriesContainer.innerHTML = '';
+                
+                if (notebookEntries.length === 0) {
+                    entriesContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No entries yet. Highlight text in the course content to add notes!</p>';
+                    return;
+                }
+                
+                notebookEntries.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.className = 'notebook-entry';
+                    entryDiv.innerHTML = `
+                        <div class="entry-header">
+                            <span class="entry-title">${entry.title}</span>
+                            <span class="entry-date">${entry.date}</span>
+                        </div>
+                        <div class="entry-content">${entry.content}</div>
+                        <div class="entry-actions">
+                            <button class="entry-btn delete" onclick="deleteNotebookEntry('${entry.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    entriesContainer.appendChild(entryDiv);
+                });
+            } catch (error) {
+                console.error('Error loading notebook entries:', error);
+            }
+        }
+
+        // Delete notebook entry
+        async function deleteNotebookEntry(id) {
+            try {
+                const result = await DatabaseService.deleteNotebookEntry(id);
+                if (result.success) {
+                    notebookEntries = notebookEntries.filter(entry => entry.id !== id);
+                    loadNotebookEntries();
+                } else {
+                    alert('Error deleting entry. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error deleting notebook entry:', error);
+                alert('Error deleting entry. Please try again.');
+            }
+        }
+
+        // Clear all notebook entries
+        document.getElementById('clearNotebookBtn').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear all notebook entries?')) {
+                try {
+                    const result = await DatabaseService.clearAllNotebookEntries();
+                    if (result.success) {
+                        notebookEntries = [];
+                        loadNotebookEntries();
+                    } else {
+                        alert('Error clearing entries. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error clearing notebook entries:', error);
+                    alert('Error clearing entries. Please try again.');
+                }
+            }
+        });
+
+        // Notebook modal
+        const notebookModal = document.getElementById('notebookModal');
+        const notebookBtn = document.getElementById('notebookBtn');
+        const closeNotebookBtn = document.getElementById('closeNotebookBtn');
+
+        notebookBtn.addEventListener('click', () => {
+            loadNotebookEntries();
+            notebookModal.classList.add('open');
+        });
+
+        closeNotebookBtn.addEventListener('click', () => {
+            notebookModal.classList.remove('open');
+        });
+
+        notebookModal.addEventListener('click', (e) => {
+            if (e.target === notebookModal) {
+                notebookModal.classList.remove('open');
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('pendingUser');
+                localStorage.removeItem('userData');
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Initialize the course
+        async function initializeCourseViewer() {
+            try {
+                initializeCourse();
+                await loadNotebookEntries();
+                console.log('Course viewer loaded successfully!');
+            } catch (error) {
+                console.error('Error initializing course viewer:', error);
+            }
+        }
+        
+        initializeCourseViewer();
+    </script>
+</body>
+</html> 
